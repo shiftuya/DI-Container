@@ -15,4 +15,28 @@ public class BeanDescription {
   private final List<BeanProperty> constructorArgs = new ArrayList<>();
 
   private final List<BeanProperty> setterArgs = new ArrayList<>();
+
+  public BeanLifecycle getBeanLifecycle() {
+    return beanLifecycle;
+  }
+
+  public Class<?> getClazz() {
+    return clazz;
+  }
+
+  public Object getInstance() {
+    return instance;
+  }
+
+  public boolean isProxy() {
+    return isProxy;
+  }
+
+  public List<BeanProperty> getConstructorArgs() {
+    return constructorArgs;
+  }
+
+  public List<BeanProperty> getSetterArgs() {
+    return setterArgs;
+  }
 }

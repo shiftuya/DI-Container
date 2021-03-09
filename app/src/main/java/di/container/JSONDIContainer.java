@@ -10,12 +10,34 @@ public class JSONDIContainer implements DIContainer {
   private final Map<String, BeanDescription> beans = new ConcurrentHashMap<>();
 
   @Override
-  public <T> T getBean(String name, Class<T> clazz) {
+  public <T> T getBean(String name, Class<T> clazz) throws DIContainerException {
     return null;
   }
 
   @Override
-  public Object getBean(String name) {
+  public Object getBean(String name) throws DIContainerException {
+    BeanDescription beanDescription = beans.get(name);
+    if (beanDescription == null) {
+      throw new DIContainerException("Illegal name!!!");
+    }
+
+    switch(beanDescription.getBeanLifecycle()) {
+      case SINGLETON:
+        if (beanDescription.getInstance() == null) {
+          //...
+        } else {
+        }
+        break;
+      case PROTOTYPE:
+        break;
+      case THREAD:
+        break;
+      default:
+        throw new DIContainerException("Unknown lifecycle");
+    }
+
+
+
     return null;
   }
 

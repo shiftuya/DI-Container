@@ -17,6 +17,8 @@ public class App {
         System.out.println(new App().getGreeting());
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("xml.xml");
 
+
+        applicationContext.getBean("exampleBean2", ExampleBean2.class);
         //System.out.println(applicationContext.getBean("beanOne").getClass());
        //ExampleBean exampleBean = applicationContext.getBean("exampleBean", ExampleBean.class);
 
@@ -24,7 +26,7 @@ public class App {
       //  System.out.println(Arrays.toString(applicationContext.getBeanDefinitionNames()));
 
 
-
+/*
         ThingOne thingOne = applicationContext.getBean("beanOne", ThingOne.class);
         System.out.println(thingOne.thingTwo.getDate());
 
@@ -34,6 +36,6 @@ public class App {
        // System.out.println(thingOne1.thingTwo.getDate());
 
         System.out.println(thingOne.thingTwo.getClass());
-        System.out.println(thingOne.integerProperty);
+        System.out.println(thingOne.integerProperty);*/
     }
 }
