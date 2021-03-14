@@ -3,6 +3,7 @@ package di.container;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,13 +49,17 @@ public class BeanFactory {
     var constr = getConstructor(description);
     Object object = null;
     try {
-      object = constr.newInstance(description.getConstructorArgs().stream().map(BeanProperty::getValue).toArray());
+      List<Object> args = new ArrayList<>(); // todo what to do about this
+      for (var arg : description.getConstructorArgs()) {
+        args.add(arg.getBean());
+      }
+      object = constr.newInstance(args.toArray());
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       throw new DIContainerException("Unable to instantiate bean");
     }
 
     for (var arg : description.getSetterArgs()) {
-      String name = "set" + arg.getName().substring(0, 1).toUpperCase() + arg.getName().substring(1);
+      String name = "set" + arg.getId().substring(0, 1).toUpperCase() + arg.getId().substring(1);
       Method method;
       try {
         method = description.getClazz().getMethod(name, arg.getClazz());
@@ -63,7 +68,7 @@ public class BeanFactory {
       }
 
       try {
-        method.invoke(object, arg.getValue());
+        method.invoke(object, arg.getBean());
       } catch (IllegalAccessException | InvocationTargetException e) {
         e.printStackTrace();
       }

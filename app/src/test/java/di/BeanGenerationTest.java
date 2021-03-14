@@ -7,6 +7,7 @@ import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
 import di.container.BeanProperty;
+import di.container.BeanPropertyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JSONDIContainer;
@@ -25,10 +26,7 @@ public class BeanGenerationTest {
         prototype.setClazz(SimpleClass.class);
         prototype.setBeanLifecycle(BeanLifecycle.PROTOTYPE);
 
-        BeanProperty stringArg = new BeanProperty();
-        stringArg.setName("attribute");
-        stringArg.setValue(value);
-        stringArg.setClazz(String.class);
+        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
         prototype.getConstructorArgs().add(stringArg);
 
@@ -51,6 +49,7 @@ public class BeanGenerationTest {
 
     @Test public void basicSingletonTest() {
         String value = "TestString";
+        int number = 5150;
 
         BeanDescription singleton = new BeanDescription();
         singleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
@@ -58,12 +57,13 @@ public class BeanGenerationTest {
         singleton.setClazz(SimpleClass.class);
         singleton.setInstance(null);
 
-        BeanProperty stringArg = new BeanProperty();
-        stringArg.setName("attribute");
-        stringArg.setValue(value);
-        stringArg.setClazz(String.class);
+        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
         singleton.getConstructorArgs().add(stringArg);
+
+        BeanProperty intArg = new BeanPropertyWithValue("number", number, int.class);
+
+        singleton.getSetterArgs().add(intArg);
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
@@ -73,6 +73,7 @@ public class BeanGenerationTest {
         try {
             SimpleClass bean1 = container.getBean("singleton", SimpleClass.class);
             assertEquals(value, bean1.getAttribute());
+            assertEquals(number, bean1.getNumber());
 
             SimpleClass bean2 = container.getBean("singleton", SimpleClass.class);
             assertEquals(bean1, bean2);
