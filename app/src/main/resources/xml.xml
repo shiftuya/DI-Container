@@ -16,24 +16,28 @@
   </bean>-->
 
 
+<!--
   <bean id="exampleBean2" class="di.ExampleBean2">
     <property name="integerProperty" value="1"/>
   </bean>
+-->
+
+
 
 
 <!--
-
-
   <bean id="beanOne" class="di.ThingOne">
       <constructor-arg ref="beanTwo"/>
       <constructor-arg value="100"/>
       <property name="integerProperty" value="1"/>
     </bean>
+-->
 
     <bean id="beanTwo" class="di.ThingTwo" scope="prototype">
-      <aop:scoped-proxy/>
+      <!--<aop:scoped-proxy/>-->
     </bean>
 
+<!--
     <bean id="beanThree" class="di.ThingThree"/>
 
 -->

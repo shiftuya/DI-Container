@@ -36,7 +36,23 @@ public class BeanDescription {
     return constructorArgs;
   }
 
+  public void setInstance(Object instance) {
+    this.instance = instance;
+  }
+
   public List<BeanProperty> getSetterArgs() {
     return setterArgs;
+  }
+
+  public void setBeanLifecycle(BeanLifecycle beanLifecycle) {
+    this.beanLifecycle = beanLifecycle;
+  }
+
+  public void setClazz(Class<?> clazz) {
+    this.clazz = clazz;
+  }
+
+  public void setProxy(boolean proxy) {
+    isProxy = proxy;
   }
 }

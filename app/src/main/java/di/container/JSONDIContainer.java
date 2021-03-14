@@ -7,16 +7,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class JSONDIContainer implements DIContainer {
 
-  private final Map<String, BeanDescription> beans = new ConcurrentHashMap<>();
+  BeanFactory beanFactory = new BeanFactory();
+ // private final Map<String, BeanDescription> beans = new ConcurrentHashMap<>();
 
   @Override
   public <T> T getBean(String name, Class<T> clazz) throws DIContainerException {
-    return null;
+    Object bean = getBean(name);
+    if (clazz.isInstance(bean)) {
+      return (T)bean;
+    }
+    throw new DIContainerException(name + " is not " + clazz.getName());
+  }
+
+  public JSONDIContainer(BeanFactory beanFactory) {
+    this.beanFactory = beanFactory;
+  }
+
+  public JSONDIContainer() {
+
   }
 
   @Override
   public Object getBean(String name) throws DIContainerException {
-    BeanDescription beanDescription = beans.get(name);
+   /* BeanDescription beanDescription = beans.get(name);
     if (beanDescription == null) {
       throw new DIContainerException("Illegal name!!!");
     }
@@ -29,6 +42,7 @@ public class JSONDIContainer implements DIContainer {
         }
         break;
       case PROTOTYPE:
+
         break;
       case THREAD:
         break;
@@ -36,9 +50,9 @@ public class JSONDIContainer implements DIContainer {
         throw new DIContainerException("Unknown lifecycle");
     }
 
+*/
 
-
-    return null;
+    return beanFactory.getBean(name);
   }
 
   @Override
