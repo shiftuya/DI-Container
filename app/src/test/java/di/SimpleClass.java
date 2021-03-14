@@ -2,7 +2,7 @@ package di;
 
 import java.util.Date;
 
-public class SimpleClass {
+public class SimpleClass implements Interface {
   private String attribute;
 
   private int number;

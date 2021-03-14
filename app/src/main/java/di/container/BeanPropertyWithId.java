@@ -22,4 +22,9 @@ public class BeanPropertyWithId implements BeanProperty {
     return clazz;
   }
 
+  public BeanPropertyWithId(BeanFactory parentFactory, String id, Class<?> clazz) {
+    this.parentFactory = parentFactory;
+    this.id = id;
+    this.clazz = clazz;
+  }
 }

@@ -7,6 +7,7 @@ import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
 import di.container.BeanProperty;
+import di.container.BeanPropertyWithId;
 import di.container.BeanPropertyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
@@ -77,6 +78,47 @@ public class BeanGenerationTest {
 
             SimpleClass bean2 = container.getBean("singleton", SimpleClass.class);
             assertEquals(bean1, bean2);
+        } catch (DIContainerException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test public void complexSingletonTest() {
+        String value = "TestString";
+
+        BeanDescription field = new BeanDescription();
+        field.setBeanLifecycle(BeanLifecycle.SINGLETON);
+        field.setProxy(false);
+        field.setClazz(SimpleClass.class);
+        field.setInstance(null);
+
+        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
+
+        field.getConstructorArgs().add(stringArg);
+
+        Map<String, BeanDescription> map = new HashMap<>();
+        map.put("singleton", field);
+
+
+        BeanDescription complexSingleton = new BeanDescription();
+        complexSingleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
+        complexSingleton.setProxy(false);
+        complexSingleton.setClazz(ComplexClass.class);
+        complexSingleton.setInstance(null);
+
+        BeanFactory beanFactory = new BeanFactory(map);
+
+        BeanProperty complexSingletonConstructorProperty = new BeanPropertyWithId(beanFactory, "singleton", Interface.class);
+        complexSingleton.getConstructorArgs().add(complexSingletonConstructorProperty);
+
+        map.put("complexSingleton", complexSingleton);
+
+        DIContainer container = new JSONDIContainer(beanFactory);
+
+        try {
+            ComplexClass bean = container.getBean("complexSingleton", ComplexClass.class);
+            assertEquals(value, bean.getField().getAttribute());
         } catch (DIContainerException e) {
             e.printStackTrace();
             fail();
