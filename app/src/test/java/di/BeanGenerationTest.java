@@ -16,13 +16,46 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BeanGenerationTest {
+    @Test public void basicPrototypeTest() {
+        String value = "TestString";
+
+        BeanDescription prototype = new BeanDescription();
+        prototype.setInstance(null);
+        prototype.setProxy(false);
+        prototype.setClazz(SimpleClass.class);
+        prototype.setBeanLifecycle(BeanLifecycle.PROTOTYPE);
+
+        BeanProperty stringArg = new BeanProperty();
+        stringArg.setName("attribute");
+        stringArg.setValue(value);
+        stringArg.setClazz(String.class);
+
+        prototype.getConstructorArgs().add(stringArg);
+
+        Map<String, BeanDescription> map = new HashMap<>();
+        map.put("prototype", prototype);
+        BeanFactory beanFactory = new BeanFactory(map);
+        DIContainer container = new JSONDIContainer(beanFactory);
+
+        try {
+            SimpleClass bean1 = container.getBean("prototype", SimpleClass.class);
+            assertEquals(value, bean1.getAttribute());
+
+            SimpleClass bean2 = container.getBean("prototype", SimpleClass.class);
+            assertNotEquals(bean1, bean2);
+        } catch (DIContainerException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     @Test public void basicSingletonTest() {
         String value = "TestString";
 
         BeanDescription singleton = new BeanDescription();
         singleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
         singleton.setProxy(false);
-        singleton.setClazz(SimpleSingleton.class);
+        singleton.setClazz(SimpleClass.class);
         singleton.setInstance(null);
 
         BeanProperty stringArg = new BeanProperty();
@@ -37,14 +70,15 @@ public class BeanGenerationTest {
         BeanFactory beanFactory = new BeanFactory(map);
         DIContainer container = new JSONDIContainer(beanFactory);
 
-        SimpleSingleton bean = null;
         try {
-            bean = (SimpleSingleton) container.getBean("singleton");
+            SimpleClass bean1 = container.getBean("singleton", SimpleClass.class);
+            assertEquals(value, bean1.getAttribute());
+
+            SimpleClass bean2 = container.getBean("singleton", SimpleClass.class);
+            assertEquals(bean1, bean2);
         } catch (DIContainerException e) {
             e.printStackTrace();
             fail();
         }
-
-        assertEquals(value, bean.getAttribute());
     }
 }

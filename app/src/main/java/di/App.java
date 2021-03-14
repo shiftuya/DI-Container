@@ -18,7 +18,20 @@ public class App {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("xml.xml");
 
 
-        applicationContext.getBean("exampleBean2", ExampleBean2.class);
+        ThingOne thingOne = (ThingOne) applicationContext.getBean("beanOne");
+        System.out.println(thingOne.thingTwo.getDate());
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ThingOne thingOne1 = (ThingOne) applicationContext.getBean("beanOne");
+        System.out.println(thingOne.thingTwo.getDate());
+        System.out.println(thingOne == thingOne1);
+
+        //applicationContext.getBean("exampleBean2", ExampleBean2.class);
         //System.out.println(applicationContext.getBean("beanOne").getClass());
        //ExampleBean exampleBean = applicationContext.getBean("exampleBean", ExampleBean.class);
 
@@ -37,5 +50,9 @@ public class App {
 
         System.out.println(thingOne.thingTwo.getClass());
         System.out.println(thingOne.integerProperty);*/
+
+
+
+
     }
 }
