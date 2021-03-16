@@ -34,7 +34,7 @@ public class BeanDescription {
     return beanLifecycle;
   }
 
-  private Class<?> getClazz() {
+  public Class<?> getClazz() {
     return clazz;
   }
 

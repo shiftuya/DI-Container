@@ -8,8 +8,6 @@ public class InnerBeanProperty implements BeanProperty {
 
   private BeanDescription description;
 
-  private Class<?> clazz; // todo delete
-
   @Override
   public String getFieldName() {
     return fieldName;
@@ -17,12 +15,12 @@ public class InnerBeanProperty implements BeanProperty {
 
   @Override
   public Object getBean() throws DIContainerException {
-    return null;
+    return description.getBean();
   }
 
   @Override
   public Class<?> getClazz() {
-    return clazz;
+    return description.getClazz();
   }
 
   public InnerBeanProperty(String fieldName, BeanDescription description) {

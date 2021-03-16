@@ -20,4 +20,11 @@ public class BeanFactory {
     return beanDescription.getBean();
   }
 
+  public BeanDescription getBeanDescription(String name) {
+    return beans.get(name);
+  }
+
+  public Map<String, BeanDescription> getBeans() {
+    return beans;
+  }
 }

@@ -10,11 +10,11 @@ public class BeanPropertyWithId implements BeanProperty {
 
   private Class<?> clazz; // todo delete
 
-  private String name;
+  private String fieldName;
 
   @Override
   public String getFieldName() {
-    return name;
+    return fieldName;
   }
 
   @Override
@@ -24,7 +24,7 @@ public class BeanPropertyWithId implements BeanProperty {
 
   @Override
   public Class<?> getClazz() {
-    return clazz;
+    return parentFactory.getBeanDescription(id).getClazz();
   }
 
   public BeanPropertyWithId(BeanFactory parentFactory, String id) {
@@ -32,9 +32,9 @@ public class BeanPropertyWithId implements BeanProperty {
     this.id = id;
   }
 
-  public BeanPropertyWithId(BeanFactory parentFactory, String id, String name) {
+  public BeanPropertyWithId(BeanFactory parentFactory, String id, String fieldName) {
     this.parentFactory = parentFactory;
     this.id = id;
-    this.name = name;
+    this.fieldName = fieldName;
   }
 }
