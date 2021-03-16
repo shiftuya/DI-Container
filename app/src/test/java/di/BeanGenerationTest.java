@@ -22,7 +22,6 @@ public class BeanGenerationTest {
         String value = "TestString";
 
         BeanDescription prototype = new BeanDescription();
-        prototype.setInstance(null);
         prototype.setProxy(false);
         prototype.setClazz(SimpleClass.class);
         prototype.setBeanLifecycle(BeanLifecycle.PROTOTYPE);
@@ -56,7 +55,6 @@ public class BeanGenerationTest {
         singleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
         singleton.setProxy(false);
         singleton.setClazz(SimpleClass.class);
-        singleton.setInstance(null);
 
         BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
@@ -91,7 +89,6 @@ public class BeanGenerationTest {
         field.setBeanLifecycle(BeanLifecycle.SINGLETON);
         field.setProxy(false);
         field.setClazz(SimpleClass.class);
-        field.setInstance(null);
 
         BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
@@ -105,7 +102,6 @@ public class BeanGenerationTest {
         complexSingleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
         complexSingleton.setProxy(false);
         complexSingleton.setClazz(ComplexClass.class);
-        complexSingleton.setInstance(null);
 
         BeanFactory beanFactory = new BeanFactory(map);
 
