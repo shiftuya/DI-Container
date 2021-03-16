@@ -8,7 +8,7 @@ public class BeanPropertyWithId implements BeanProperty {
 
   private String id;
 
-  private Class<?> clazz;
+  private Class<?> clazz; // todo delete
 
   private String name;
 
@@ -27,17 +27,14 @@ public class BeanPropertyWithId implements BeanProperty {
     return clazz;
   }
 
-  public BeanPropertyWithId(BeanFactory parentFactory, String id, Class<?> clazz) {
+  public BeanPropertyWithId(BeanFactory parentFactory, String id) {
     this.parentFactory = parentFactory;
     this.id = id;
-    this.clazz = clazz;
   }
 
-  public BeanPropertyWithId(BeanFactory parentFactory, String id, Class<?> clazz,
-      String name) {
+  public BeanPropertyWithId(BeanFactory parentFactory, String id, String name) {
     this.parentFactory = parentFactory;
     this.id = id;
-    this.clazz = clazz;
     this.name = name;
   }
 }

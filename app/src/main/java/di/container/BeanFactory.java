@@ -5,16 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BeanFactory {
 
-  public BeanFactory() {
+  private Map<String, BeanDescription> beans;
+
+  public void setBeans(Map<String, BeanDescription> beans) {
+    this.beans = new ConcurrentHashMap<>(beans);
   }
-
-  public BeanFactory(Map<String, BeanDescription> beans) {
-    this.beans = beans;
-  }
-
-  private Map<String, BeanDescription> beans = new ConcurrentHashMap<>();
-
-
 
   public Object getBean(String name) throws DIContainerException {
     var beanDescription = beans.get(name);

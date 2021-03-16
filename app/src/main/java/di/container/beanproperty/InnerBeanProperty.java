@@ -8,7 +8,7 @@ public class InnerBeanProperty implements BeanProperty {
 
   private BeanDescription description;
 
-  private Class<?> clazz;
+  private Class<?> clazz; // todo delete
 
   @Override
   public String getFieldName() {
@@ -25,14 +25,12 @@ public class InnerBeanProperty implements BeanProperty {
     return clazz;
   }
 
-  public InnerBeanProperty(String fieldName, BeanDescription description, Class<?> clazz) {
+  public InnerBeanProperty(String fieldName, BeanDescription description) {
     this.fieldName = fieldName;
     this.description = description;
-    this.clazz = clazz;
   }
 
-  public InnerBeanProperty(BeanDescription description, Class<?> clazz) {
+  public InnerBeanProperty(BeanDescription description) {
     this.description = description;
-    this.clazz = clazz;
   }
 }

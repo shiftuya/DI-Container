@@ -1,0 +1,61 @@
+{
+    "beans": [
+        {
+            "id": "personJohn",
+            "className": "di.jsonparser.Person",
+            "constructorArguments": [
+                {
+                    "ref": "fullNameJohn"
+                }, {
+                    "fieldName": "gender",
+                    "type": "java.lang.String",
+                    "value": "F"
+                }
+            ],
+            "setterArguments": [
+                {
+                    "fieldName": "age",
+                    "type": "int",
+                    "value": 30
+                }, {
+                    "fieldName": "gender",
+                    "type": "java.lang.String",
+                    "value": "M"
+                }
+            ]
+        }, {
+            "id": "fullNameJohn",
+            "className": "di.jsonparser.FullName",
+            "lifecycle": "prototype",
+            "proxy": true,
+            "constructorArguments": [
+                {
+                    "type": "java.lang.String",
+                    "value": "John"
+                }, {
+                    "type": "java.lang.String",
+                    "value": "Doe"
+                }
+            ]
+        }, {
+            "id": "personJane",
+            "className": "di.jsonparser.Person",
+            "constructorArguments": [
+                {
+                    "bean": {
+                        "className": "di.jsonparser.FullName",
+                        "constructorArguments": [
+                            {
+                                "type": "java.lang.String",
+                                "value": "Jane"
+                            }, {
+                                "type": "java.lang.String",
+                                "value": "Doe"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
