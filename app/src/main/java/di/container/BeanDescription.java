@@ -8,6 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BeanDescription {
+
+  public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz,
+      boolean isProxy, List<BeanProperty> constructorArgs, List<BeanProperty> setterArgs) {
+    this.beanLifecycle = beanLifecycle;
+    this.clazz = clazz;
+    this.isProxy = isProxy;
+    this.constructorArgs = constructorArgs;
+    this.setterArgs = setterArgs;
+  }
+
   private BeanLifecycle beanLifecycle;
 
   private Class<?> clazz;
@@ -16,9 +26,9 @@ public class BeanDescription {
 
   private boolean isProxy;
 
-  private final List<BeanProperty> constructorArgs = new ArrayList<>();
+  private List<BeanProperty> constructorArgs = new ArrayList<>();
 
-  private final List<BeanProperty> setterArgs = new ArrayList<>();
+  private List<BeanProperty> setterArgs = new ArrayList<>();
 
   private BeanLifecycle getBeanLifecycle() {
     return beanLifecycle;
@@ -80,7 +90,7 @@ public class BeanDescription {
     var constr = getConstructor();
     Object object = null;
     try {
-      List<Object> args = new ArrayList<>(); // todo what to do about this
+      List<Object> args = new ArrayList<>(); // todo what to do - can't throw exceptions from lambda
       for (var arg : getConstructorArgs()) {
         args.add(arg.getBean());
       }
