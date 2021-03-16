@@ -1,0 +1,32 @@
+{
+  "beans": [
+    {
+      "id": "bean1",
+      "class": "ru.nsu.heh.Class",
+      "constructor-args": [
+        {
+          "type": "int",
+          "value": 8
+        },
+        {
+          "ref": "bean2"
+        }
+      ],
+      "setter-args": [
+        {
+          "type": "String",
+          "value": "sjdgksj"
+        }
+      ]
+    },
+
+    {
+      "id": "bean2",
+      "lifecycle": "prototype",
+      "class": "ru.nsu.fit.Clazz",
+      "proxy": true
+    }
+  ]
+
+
+}
