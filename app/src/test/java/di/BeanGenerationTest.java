@@ -3,6 +3,7 @@
  */
 package di;
 
+import com.google.common.collect.Lists;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
@@ -12,6 +13,7 @@ import di.container.beanproperty.BeanPropertyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JSONDIContainer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -21,14 +23,11 @@ public class BeanGenerationTest {
     @Test public void basicPrototypeTest() {
         String value = "TestString";
 
-        BeanDescription prototype = new BeanDescription();
-        prototype.setProxy(false);
-        prototype.setClazz(SimpleClass.class);
-        prototype.setBeanLifecycle(BeanLifecycle.PROTOTYPE);
-
         BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
-        prototype.getConstructorArgs().add(stringArg);
+        BeanDescription prototype = new BeanDescription(BeanLifecycle.PROTOTYPE, SimpleClass.class,
+            false, Lists.asList(stringArg, new BeanProperty[0]), new ArrayList<>());
+
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("prototype", prototype);
@@ -51,18 +50,10 @@ public class BeanGenerationTest {
         String value = "TestString";
         int number = 5150;
 
-        BeanDescription singleton = new BeanDescription();
-        singleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
-        singleton.setProxy(false);
-        singleton.setClazz(SimpleClass.class);
-
         BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
-
-        singleton.getConstructorArgs().add(stringArg);
-
         BeanProperty intArg = new BeanPropertyWithValue("number", number, int.class);
-
-        singleton.getSetterArgs().add(intArg);
+        BeanDescription singleton = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
+            Lists.newArrayList(stringArg), Lists.newArrayList(intArg));
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
@@ -85,28 +76,19 @@ public class BeanGenerationTest {
     @Test public void complexSingletonTest() {
         String value = "TestString";
 
-        BeanDescription field = new BeanDescription();
-        field.setBeanLifecycle(BeanLifecycle.SINGLETON);
-        field.setProxy(false);
-        field.setClazz(SimpleClass.class);
-
         BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
 
-        field.getConstructorArgs().add(stringArg);
+        BeanDescription field = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
+            Lists.newArrayList(stringArg), new ArrayList<>());
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", field);
 
-
-        BeanDescription complexSingleton = new BeanDescription();
-        complexSingleton.setBeanLifecycle(BeanLifecycle.SINGLETON);
-        complexSingleton.setProxy(false);
-        complexSingleton.setClazz(ComplexClass.class);
-
         BeanFactory beanFactory = new BeanFactory(map);
 
         BeanProperty complexSingletonConstructorProperty = new BeanPropertyWithId(beanFactory, "singleton", Interface.class);
-        complexSingleton.getConstructorArgs().add(complexSingletonConstructorProperty);
+        BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON, ComplexClass.class,
+            false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>());
 
         map.put("complexSingleton", complexSingleton);
 
