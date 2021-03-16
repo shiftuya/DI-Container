@@ -59,7 +59,7 @@ public class BeanFactory {
     }
 
     for (var arg : description.getSetterArgs()) {
-      String name = "set" + arg.getId().substring(0, 1).toUpperCase() + arg.getId().substring(1);
+      String name = "set" + arg.getName().substring(0, 1).toUpperCase() + arg.getName().substring(1);
       Method method;
       try {
         method = description.getClazz().getMethod(name, arg.getClazz());

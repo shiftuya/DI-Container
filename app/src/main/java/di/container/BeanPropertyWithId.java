@@ -7,9 +7,11 @@ public class BeanPropertyWithId implements BeanProperty {
 
   private Class<?> clazz;
 
+  private String name;
+
   @Override
-  public String getId() {
-    return id;
+  public String getName() {
+    return name;
   }
 
   @Override
@@ -26,5 +28,13 @@ public class BeanPropertyWithId implements BeanProperty {
     this.parentFactory = parentFactory;
     this.id = id;
     this.clazz = clazz;
+  }
+
+  public BeanPropertyWithId(BeanFactory parentFactory, String id, Class<?> clazz,
+      String name) {
+    this.parentFactory = parentFactory;
+    this.id = id;
+    this.clazz = clazz;
+    this.name = name;
   }
 }

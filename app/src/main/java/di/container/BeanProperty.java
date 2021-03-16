@@ -1,7 +1,7 @@
 package di.container;
 
 public interface BeanProperty {
-  String getId();
+  String getName();
   Object getBean() throws DIContainerException;
   Class<?> getClazz();
 }
