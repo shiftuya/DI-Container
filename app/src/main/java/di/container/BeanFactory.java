@@ -1,5 +1,6 @@
 package di.container;
 
+import di.container.beanproperty.BeanProperty;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,7 +46,7 @@ public class BeanFactory {
     return bean;
   }
 
-  public Object generateBean(BeanDescription description) throws DIContainerException {
+  private Object generateBean(BeanDescription description) throws DIContainerException {
     var constr = getConstructor(description);
     Object object = null;
     try {
@@ -59,7 +60,7 @@ public class BeanFactory {
     }
 
     for (var arg : description.getSetterArgs()) {
-      String name = "set" + arg.getName().substring(0, 1).toUpperCase() + arg.getName().substring(1);
+      String name = "set" + arg.getFieldName().substring(0, 1).toUpperCase() + arg.getFieldName().substring(1);
       Method method;
       try {
         method = description.getClazz().getMethod(name, arg.getClazz());

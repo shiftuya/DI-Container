@@ -1,7 +1,9 @@
-package di.container;
+package di.container.beanproperty;
+
+import di.container.DIContainerException;
 
 public interface BeanProperty {
-  String getName();
+  String getFieldName();
   Object getBean() throws DIContainerException;
   Class<?> getClazz();
 }

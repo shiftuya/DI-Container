@@ -1,5 +1,6 @@
 package di.container;
 
+import di.container.beanproperty.BeanProperty;
 import java.util.ArrayList;
 import java.util.List;
 

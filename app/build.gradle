@@ -33,6 +33,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework/spring-aop
     implementation group: 'org.springframework', name: 'spring-aop', version: '5.3.4'
 
+    // https://mvnrepository.com/artifact/javax.inject/javax.inject
+    implementation group: 'javax.inject', name: 'javax.inject', version: '1'
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    //compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+
 }
 
 application {
