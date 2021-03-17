@@ -36,7 +36,6 @@ public class JsonParser {
     public BeanFactory getBeanFactory(String jsonFileName) throws IOException, ClassNotFoundException {
         String jsonString = new String(JsonParser.class.getResourceAsStream("/" + jsonFileName).readAllBytes());
         BeansJson beansJson = new Gson().fromJson(jsonString, BeansJson.class);
-        System.out.println(beansJson);
 
         Map<String, BeanDescription> beans = new HashMap<>();
         for (BeanJson beanJson : beansJson.getBeans()) {

@@ -12,7 +12,7 @@ import di.container.beanproperty.BeanPropertyWithId;
 import di.container.beanproperty.BeanPropertyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
-import di.container.JSONDIContainer;
+import di.container.JsonDIContainer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +31,9 @@ public class BeanGenerationTest {
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("prototype", prototype);
-        BeanFactory beanFactory = new BeanFactory(map);
-        DIContainer container = new JSONDIContainer(beanFactory);
+        BeanFactory beanFactory = new BeanFactory();
+        beanFactory.setBeans(map);
+        DIContainer container = new JsonDIContainer(beanFactory);
 
         try {
             SimpleClass bean1 = container.getBean("prototype", SimpleClass.class);
@@ -57,8 +58,9 @@ public class BeanGenerationTest {
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
-        BeanFactory beanFactory = new BeanFactory(map);
-        DIContainer container = new JSONDIContainer(beanFactory);
+        BeanFactory beanFactory = new BeanFactory();
+        beanFactory.setBeans(map);
+        DIContainer container = new JsonDIContainer(beanFactory);
 
         try {
             SimpleClass bean1 = container.getBean("singleton", SimpleClass.class);
@@ -84,15 +86,18 @@ public class BeanGenerationTest {
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", field);
 
-        BeanFactory beanFactory = new BeanFactory(map);
+        BeanFactory beanFactory = new BeanFactory();
 
-        BeanProperty complexSingletonConstructorProperty = new BeanPropertyWithId(beanFactory, "singleton", Interface.class);
+
+        BeanProperty complexSingletonConstructorProperty = new BeanPropertyWithId(beanFactory, "singleton");
         BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON, ComplexClass.class,
             false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>());
 
         map.put("complexSingleton", complexSingleton);
 
-        DIContainer container = new JSONDIContainer(beanFactory);
+        beanFactory.setBeans(map);
+
+        DIContainer container = new JsonDIContainer(beanFactory);
 
         try {
             ComplexClass bean = container.getBean("complexSingleton", ComplexClass.class);
