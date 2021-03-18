@@ -10,10 +10,10 @@ import java.util.List;
 
 public class BeanDescription {
 
-  private BeanLifecycle beanLifecycle;
-  private Class<?> clazz;
+  private final BeanLifecycle beanLifecycle;
+  private final Class<?> clazz;
   private Object instance;
-  private boolean isProxy;
+  private final boolean isProxy;
   private final List<Dependency> constructorArgs;
   private final List<Dependency> setterArgs;
 
@@ -30,42 +30,14 @@ public class BeanDescription {
     return clazz;
   }
 
-  private Object getInstance() {
-    return instance;
-  }
-
-  public boolean isProxy() {
-    return isProxy;
-  }
-
-  public List<Dependency> getConstructorArgs() {
-    return constructorArgs;
-  }
-
-  public List<Dependency> getSetterArgs() {
-    return setterArgs;
-  }
-
-  public void setBeanLifecycle(BeanLifecycle beanLifecycle) {
-    this.beanLifecycle = beanLifecycle;
-  }
-
-  public void setClazz(Class<?> clazz) {
-    this.clazz = clazz;
-  }
-
-  public void setProxy(boolean proxy) {
-    isProxy = proxy;
-  }
-
   public Object getBean() throws DIContainerException {
     Object bean;
     switch (beanLifecycle) {
       case SINGLETON -> {
-        if (getInstance() == null) {
+        if (instance == null) {
           instance = generateBean();
         }
-        bean = getInstance();
+        bean = instance;
       }
       case PROTOTYPE -> bean = generateBean();
       case THREAD -> throw new DIContainerException("I don't know what is that yet");
@@ -78,7 +50,7 @@ public class BeanDescription {
     Object object;
     try {
       List<Object> args = new ArrayList<>();
-      for (Dependency arg : getConstructorArgs()) {
+      for (Dependency arg : constructorArgs) {
         args.add(arg.getBean());
       }
       object = getConstructor().newInstance(args.toArray());
@@ -86,7 +58,7 @@ public class BeanDescription {
       throw new DIContainerException("Unable to instantiate bean");
     }
 
-    for (Dependency arg : getSetterArgs()) {
+    for (Dependency arg : setterArgs) {
       String name = "set" + Utils.capitalize(arg.getFieldName());
       Method method;
       try {
@@ -108,10 +80,10 @@ public class BeanDescription {
   private Constructor<?> getConstructor() throws DIContainerException {
     Constructor<?> constr = null;
 
-    for (var constructor : clazz.getConstructors()) {
+    for (Constructor<?> constructor : clazz.getConstructors()) {
       if (constructor.isVarArgs()) {
         // ... TODO
-      } else if (isMatchingConstructor(constructor, getConstructorArgs())) {
+      } else if (isMatchingConstructor(constructor, constructorArgs)) {
         constr = constructor;
         break;
       }
