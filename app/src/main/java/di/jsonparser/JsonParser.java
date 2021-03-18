@@ -11,6 +11,7 @@ import di.container.beanproperty.InnerBeanProperty;
 import di.jsonparser.objects.Argument;
 import di.jsonparser.objects.Bean;
 import di.jsonparser.objects.Beans;
+import di.util.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +35,7 @@ public class JsonParser {
     private final BeanFactory beanFactory = new BeanFactory();
 
     public BeanFactory getBeanFactory(String jsonFileName) throws IOException, ClassNotFoundException {
-        String jsonString = new String(JsonParser.class.getResourceAsStream("/" + jsonFileName).readAllBytes());
-        Beans beans = new Gson().fromJson(jsonString, Beans.class);
+        Beans beans = new Gson().fromJson(Utils.getResourceAsString(jsonFileName), Beans.class);
 
         Map<String, BeanDescription> beanMap = new HashMap<>();
         for (Bean bean : beans.getBeans()) {
