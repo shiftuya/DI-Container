@@ -1,6 +1,9 @@
-package di.jsonparser;
+package di.beanparser;
 
 import com.google.gson.Gson;
+import di.beanparser.objects.Argument;
+import di.beanparser.objects.Bean;
+import di.beanparser.objects.Beans;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
@@ -8,9 +11,6 @@ import di.container.beanproperty.BeanProperty;
 import di.container.beanproperty.BeanPropertyWithId;
 import di.container.beanproperty.BeanPropertyWithValue;
 import di.container.beanproperty.InnerBeanProperty;
-import di.jsonparser.objects.Argument;
-import di.jsonparser.objects.Bean;
-import di.jsonparser.objects.Beans;
 import di.util.Utils;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonParser {
+public class JsonBeanParser {
 
     private static final Map<String, Class<?>> PRIMITIVES = new HashMap<>() {{
         put("boolean", boolean.class);
@@ -34,7 +34,7 @@ public class JsonParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
 
-    public BeanFactory getBeanFactory(String jsonFileName) throws IOException, ClassNotFoundException {
+    public JsonBeanParser(String jsonFileName) throws ClassNotFoundException, IOException {
         Beans beans = new Gson().fromJson(Utils.getResourceAsString(jsonFileName), Beans.class);
 
         Map<String, BeanDescription> beanMap = new HashMap<>();
@@ -43,8 +43,6 @@ public class JsonParser {
         }
 
         beanFactory.setBeans(beanMap);
-
-        return beanFactory;
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
@@ -100,5 +98,9 @@ public class JsonParser {
         }
 
         return clazz;
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
 }

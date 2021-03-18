@@ -1,8 +1,7 @@
 package di.container;
 
-import di.jsonparser.JsonParser;
+import di.beanparser.JsonBeanParser;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -24,7 +23,7 @@ public class JsonDIContainer implements DIContainer {
 
   public JsonDIContainer(String filename) throws DIContainerException {
     try {
-      beanFactory = new JsonParser().getBeanFactory(filename);
+      beanFactory = new JsonBeanParser(filename).getBeanFactory();
     } catch (IOException | ClassNotFoundException e) {
       throw new DIContainerException("Unable to parse file: " + filename);
     }

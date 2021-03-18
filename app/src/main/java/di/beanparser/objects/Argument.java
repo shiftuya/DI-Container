@@ -1,4 +1,4 @@
-package di.jsonparser.objects;
+package di.beanparser.objects;
 
 public class Argument {
 
