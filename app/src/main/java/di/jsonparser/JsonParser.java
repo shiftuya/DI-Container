@@ -9,8 +9,8 @@ import di.container.beanproperty.BeanPropertyWithId;
 import di.container.beanproperty.BeanPropertyWithValue;
 import di.container.beanproperty.InnerBeanProperty;
 import di.jsonparser.objects.Argument;
-import di.jsonparser.objects.BeanJson;
-import di.jsonparser.objects.BeansJson;
+import di.jsonparser.objects.Bean;
+import di.jsonparser.objects.Beans;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,34 +35,29 @@ public class JsonParser {
 
     public BeanFactory getBeanFactory(String jsonFileName) throws IOException, ClassNotFoundException {
         String jsonString = new String(JsonParser.class.getResourceAsStream("/" + jsonFileName).readAllBytes());
-        BeansJson beansJson = new Gson().fromJson(jsonString, BeansJson.class);
+        Beans beans = new Gson().fromJson(jsonString, Beans.class);
 
-        Map<String, BeanDescription> beans = new HashMap<>();
-        for (BeanJson beanJson : beansJson.getBeans()) {
-            beans.put(beanJson.getId(), parseBeanDescription(beanJson));
+        Map<String, BeanDescription> beanMap = new HashMap<>();
+        for (Bean bean : beans.getBeans()) {
+            beanMap.put(bean.getId(), parseBeanDescription(bean));
         }
 
-        beanFactory.setBeans(beans);
+        beanFactory.setBeans(beanMap);
 
         return beanFactory;
     }
 
-    private BeanDescription parseBeanDescription(BeanJson beanJson) throws ClassNotFoundException {
-        Class<?> clazz = PRIMITIVES.get(beanJson.getClassName());
-        if (clazz == null) {
-            clazz = Class.forName(beanJson.getClassName());
-        }
-
+    private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
         return new BeanDescription(
-            switch (beanJson.getLifecycle()) {
-                default -> BeanLifecycle.SINGLETON;
+            switch (bean.getLifecycle()) {
+                default -> BeanLifecycle.SINGLETON; // todo throw
                 case "thread" -> BeanLifecycle.THREAD;
                 case "prototype" -> BeanLifecycle.PROTOTYPE;
             },
-            clazz,
-            beanJson.isProxy(),
-            parseBeanProperties(beanJson.getConstructorArguments()),
-            parseBeanProperties(beanJson.getSetterArguments())
+            getClazz(bean.getClassName()),
+            bean.isProxy(),
+            parseBeanProperties(bean.getConstructorArguments()),
+            parseBeanProperties(bean.getSetterArguments())
         );
     }
 
@@ -83,11 +78,8 @@ public class JsonParser {
                             new BeanPropertyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
                             new BeanPropertyWithId(beanFactory, argument.getRef())
                     );
-                } else {
-                    Class<?> clazz = PRIMITIVES.get(argument.getType());
-                    if (clazz == null) {
-                        clazz = Class.forName(argument.getType());
-                    }
+                } else { // todo parse real type value
+                    Class<?> clazz = getClazz(argument.getClassName());
 
                     beanProperties.add(
                         argument.getFieldName() != null ?
@@ -99,5 +91,14 @@ public class JsonParser {
         }
 
         return beanProperties;
+    }
+
+    private Class<?> getClazz(String className) throws ClassNotFoundException {
+        Class<?> clazz = PRIMITIVES.get(className);
+        if (clazz == null) {
+            clazz = Class.forName(className);
+        }
+
+        return clazz;
     }
 }

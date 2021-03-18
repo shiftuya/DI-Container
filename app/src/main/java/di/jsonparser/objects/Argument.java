@@ -4,16 +4,16 @@ public class Argument {
 
     private String ref;
     private String fieldName;
-    private String type;
+    private String className;
     private String value;
-    private BeanJson bean;
+    private Bean bean;
 
     @Override
     public String toString() {
         return "Argument{" +
             "ref='" + ref + '\'' +
             ", fieldName='" + fieldName + '\'' +
-            ", type='" + type + '\'' +
+            ", type='" + className + '\'' +
             ", value='" + value + '\'' +
             ", bean=" + bean +
             '}';
@@ -27,15 +27,15 @@ public class Argument {
         return fieldName;
     }
 
-    public String getType() {
-        return type;
+    public String getClassName() {
+        return className;
     }
 
     public String getValue() {
         return value;
     }
 
-    public BeanJson getBean() {
+    public Bean getBean() {
         return bean;
     }
 }

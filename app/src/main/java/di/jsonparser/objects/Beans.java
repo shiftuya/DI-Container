@@ -2,11 +2,11 @@ package di.jsonparser.objects;
 
 import java.util.Arrays;
 
-public class BeansJson {
+public class Beans {
 
-    private BeanJson[] beans;
+    private Bean[] beans;
 
-    public BeanJson[] getBeans() {
+    public Bean[] getBeans() {
         return beans;
     }
 

@@ -2,7 +2,7 @@ package di.jsonparser.objects;
 
 import java.util.Arrays;
 
-public class BeanJson {
+public class Bean {
 
     private String id;
     private String className;

@@ -8,18 +8,18 @@
                     "ref": "fullNameJohn"
                 }, {
                     "fieldName": "gender",
-                    "type": "java.lang.String",
+                    "className": "java.lang.String",
                     "value": "F"
                 }
             ],
             "setterArguments": [
                 {
                     "fieldName": "age",
-                    "type": "java.lang.String",
+                    "className": "java.lang.String",
                     "value": "30"
                 }, {
                     "fieldName": "gender",
-                    "type": "java.lang.String",
+                    "className": "java.lang.String",
                     "value": "M"
                 }
             ]
@@ -30,10 +30,10 @@
             "proxy": true,
             "constructorArguments": [
                 {
-                    "type": "java.lang.String",
+                    "className": "java.lang.String",
                     "value": "John"
                 }, {
-                    "type": "java.lang.String",
+                    "className": "java.lang.String",
                     "value": "Doe"
                 }
             ]
@@ -46,10 +46,10 @@
                         "className": "di.jsonparser.FullName",
                         "constructorArguments": [
                             {
-                                "type": "java.lang.String",
+                                "className": "java.lang.String",
                                 "value": "Jane"
                             }, {
-                                "type": "java.lang.String",
+                                "className": "java.lang.String",
                                 "value": "Doe"
                             }
                         ]

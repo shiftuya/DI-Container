@@ -6,6 +6,8 @@ public class Person {
     private String gender;
     private String age;
 
+    public Person() {}
+
     public Person(FullName fullName) {
         this.fullName = fullName;
     }

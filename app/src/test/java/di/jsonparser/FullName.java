@@ -5,6 +5,8 @@ public class FullName {
     private String firstName;
     private String secondName;
 
+    public FullName() {}
+
     public FullName(String firstName, String secondName) {
         this.firstName = firstName;
         this.secondName = secondName;
