@@ -5,10 +5,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BeanFactory {
 
-  private Map<String, BeanDescription> beans; // todo -o BeanDescriptions
+  private Map<String, BeanDescription> beanDescriptions;
 
   public Object getBean(String id) throws DIContainerException {
-    var beanDescription = beans.get(id);
+    var beanDescription = beanDescriptions.get(id);
     if (beanDescription == null) {
       throw new DIContainerException("Illegal id!!!");
     }
@@ -17,14 +17,14 @@ public class BeanFactory {
   }
 
   public BeanDescription getBeanDescription(String id) {
-    return beans.get(id);
+    return beanDescriptions.get(id);
   }
 
-  public Map<String, BeanDescription> getBeans() {
-    return beans;
+  public Map<String, BeanDescription> getBeanDescriptions() {
+    return beanDescriptions;
   }
 
-  public void setBeans(Map<String, BeanDescription> beans) {
-    this.beans = new ConcurrentHashMap<>(beans);
+  public void setBeanDescriptions(Map<String, BeanDescription> beanDescriptions) {
+    this.beanDescriptions = new ConcurrentHashMap<>(beanDescriptions);
   }
 }

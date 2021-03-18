@@ -1,6 +1,7 @@
 package di.container;
 
-import di.container.beanproperty.BeanProperty;
+import di.container.dependency.Dependency;
+import di.util.Utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,22 +14,16 @@ public class BeanDescription {
   private Class<?> clazz;
   private Object instance;
   private boolean isProxy;
-  private List<BeanProperty> constructorArgs;
-  private List<BeanProperty> setterArgs;
+  private final List<Dependency> constructorArgs;
+  private final List<Dependency> setterArgs;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
-                         List<BeanProperty> constructorArgs, List<BeanProperty> setterArgs) {
+      List<Dependency> constructorArgs, List<Dependency> setterArgs) {
     this.beanLifecycle = beanLifecycle;
     this.clazz = clazz;
     this.isProxy = isProxy;
     this.constructorArgs = constructorArgs;
     this.setterArgs = setterArgs;
-  }
-
-  // todo -o why private getters?
-  // todo -o why unused getters and setters?
-  private BeanLifecycle getBeanLifecycle() {
-    return beanLifecycle;
   }
 
   public Class<?> getClazz() {
@@ -43,15 +38,11 @@ public class BeanDescription {
     return isProxy;
   }
 
-  public List<BeanProperty> getConstructorArgs() {
+  public List<Dependency> getConstructorArgs() {
     return constructorArgs;
   }
 
-  private void setInstance(Object instance) {
-    this.instance = instance;
-  }
-
-  public List<BeanProperty> getSetterArgs() {
+  public List<Dependency> getSetterArgs() {
     return setterArgs;
   }
 
@@ -69,10 +60,10 @@ public class BeanDescription {
 
   public Object getBean() throws DIContainerException {
     Object bean;
-    switch (getBeanLifecycle()) {
+    switch (beanLifecycle) {
       case SINGLETON -> {
         if (getInstance() == null) {
-          setInstance(generateBean());
+          instance = generateBean();
         }
         bean = getInstance();
       }
@@ -84,20 +75,19 @@ public class BeanDescription {
   }
 
   private Object generateBean() throws DIContainerException {
-    var constructor = getConstructor(); // todo -o var used only once
     Object object;
     try {
-      List<Object> args = new ArrayList<>(); // todo what to do - can't throw exceptions from lambda; todo -o what???
-      for (BeanProperty arg : getConstructorArgs()) {
+      List<Object> args = new ArrayList<>();
+      for (Dependency arg : getConstructorArgs()) {
         args.add(arg.getBean());
       }
-      object = constructor.newInstance(args.toArray());
+      object = getConstructor().newInstance(args.toArray());
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       throw new DIContainerException("Unable to instantiate bean");
     }
 
-    for (BeanProperty arg : getSetterArgs()) {
-      String name = "set" + arg.getFieldName().substring(0, 1).toUpperCase() + arg.getFieldName().substring(1); // todo -o move to Utils.capitalize()
+    for (Dependency arg : getSetterArgs()) {
+      String name = "set" + Utils.capitalize(arg.getFieldName());
       Method method;
       try {
         method = getClazz().getMethod(name, arg.getClazz());
@@ -115,26 +105,25 @@ public class BeanDescription {
     return object;
   }
 
-  private Constructor<?> getConstructor() {
-    var constructors = getClazz().getConstructors(); // todo -o var used only once
-
+  private Constructor<?> getConstructor() throws DIContainerException {
     Constructor<?> constr = null;
 
-    for (var constructor : constructors) {
+    for (var constructor : clazz.getConstructors()) {
       if (constructor.isVarArgs()) {
         // ... TODO
-      } else { // todo -o else if (...) {
-        if (isMatchingConstructor(constructor, getConstructorArgs())) {
-          constr = constructor;
-          break;
-        }
+      } else if (isMatchingConstructor(constructor, getConstructorArgs())) {
+        constr = constructor;
+        break;
       }
     }
 
+    if (constr == null) {
+      throw new DIContainerException("No matching constructor");
+    }
     return constr;
   }
 
-  private boolean isMatchingConstructor(Constructor<?> constructor, List<BeanProperty> args) {
+  private boolean isMatchingConstructor(Constructor<?> constructor, List<Dependency> args) {
     if (constructor.getParameterCount() != args.size()) {
       return false;
     }

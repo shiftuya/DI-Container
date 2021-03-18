@@ -37,6 +37,6 @@ public class JsonDIContainer implements DIContainer {
 
   @Override
   public Collection<String> getBeans() {
-    return new HashSet<>(beanFactory.getBeans().keySet());
+    return new HashSet<>(beanFactory.getBeanDescriptions().keySet());
   }
 }

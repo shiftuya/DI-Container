@@ -7,9 +7,9 @@ import com.google.common.collect.Lists;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
-import di.container.beanproperty.BeanProperty;
-import di.container.beanproperty.BeanPropertyWithId;
-import di.container.beanproperty.BeanPropertyWithValue;
+import di.container.dependency.Dependency;
+import di.container.dependency.DependencyWithId;
+import di.container.dependency.DependencyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JsonDIContainer;
@@ -23,16 +23,16 @@ public class BeanGenerationTest {
     @Test public void basicPrototypeTest() {
         String value = "TestString";
 
-        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
+        Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
         BeanDescription prototype = new BeanDescription(BeanLifecycle.PROTOTYPE, SimpleClass.class,
-            false, Lists.asList(stringArg, new BeanProperty[0]), new ArrayList<>());
+            false, Lists.asList(stringArg, new Dependency[0]), new ArrayList<>());
 
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("prototype", prototype);
         BeanFactory beanFactory = new BeanFactory();
-        beanFactory.setBeans(map);
+        beanFactory.setBeanDescriptions(map);
         DIContainer container = new JsonDIContainer(beanFactory);
 
         try {
@@ -51,15 +51,15 @@ public class BeanGenerationTest {
         String value = "TestString";
         int number = 5150;
 
-        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
-        BeanProperty intArg = new BeanPropertyWithValue("number", number, int.class);
+        Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
+        Dependency intArg = new DependencyWithValue("number", number, int.class);
         BeanDescription singleton = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
             Lists.newArrayList(stringArg), Lists.newArrayList(intArg));
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
         BeanFactory beanFactory = new BeanFactory();
-        beanFactory.setBeans(map);
+        beanFactory.setBeanDescriptions(map);
         DIContainer container = new JsonDIContainer(beanFactory);
 
         try {
@@ -78,7 +78,7 @@ public class BeanGenerationTest {
     @Test public void complexSingletonTest() {
         String value = "TestString";
 
-        BeanProperty stringArg = new BeanPropertyWithValue("attribute", value, String.class);
+        Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
         BeanDescription field = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
             Lists.newArrayList(stringArg), new ArrayList<>());
@@ -89,13 +89,13 @@ public class BeanGenerationTest {
         BeanFactory beanFactory = new BeanFactory();
 
 
-        BeanProperty complexSingletonConstructorProperty = new BeanPropertyWithId(beanFactory, "singleton");
+        Dependency complexSingletonConstructorProperty = new DependencyWithId(beanFactory, "singleton");
         BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON, ComplexClass.class,
             false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>());
 
         map.put("complexSingleton", complexSingleton);
 
-        beanFactory.setBeans(map);
+        beanFactory.setBeanDescriptions(map);
 
         DIContainer container = new JsonDIContainer(beanFactory);
 

@@ -7,10 +7,10 @@ import di.beanparser.objects.Beans;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
-import di.container.beanproperty.BeanProperty;
-import di.container.beanproperty.BeanPropertyWithId;
-import di.container.beanproperty.BeanPropertyWithValue;
-import di.container.beanproperty.InnerBeanProperty;
+import di.container.dependency.Dependency;
+import di.container.dependency.DependencyWithId;
+import di.container.dependency.DependencyWithValue;
+import di.container.dependency.InnerDependency;
 import di.util.Utils;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class JsonBeanParser {
             beanMap.put(bean.getId(), parseBeanDescription(bean));
         }
 
-        beanFactory.setBeans(beanMap);
+        beanFactory.setBeanDescriptions(beanMap);
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
@@ -59,30 +59,30 @@ public class JsonBeanParser {
         );
     }
 
-    private List<BeanProperty> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException {
-        List<BeanProperty> beanProperties = new ArrayList<>();
+    private List<Dependency> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException {
+        List<Dependency> beanProperties = new ArrayList<>();
 
         if (arguments != null) {
             for (Argument argument : arguments) {
                 if (argument.getBean() != null) {
                     beanProperties.add(
                         argument.getFieldName() != null ?
-                            new InnerBeanProperty(argument.getFieldName(), parseBeanDescription(argument.getBean())) :
-                            new InnerBeanProperty(parseBeanDescription(argument.getBean()))
+                            new InnerDependency(argument.getFieldName(), parseBeanDescription(argument.getBean())) :
+                            new InnerDependency(parseBeanDescription(argument.getBean()))
                     );
                 } else if (argument.getRef() != null) {
                     beanProperties.add(
                         argument.getFieldName() != null ?
-                            new BeanPropertyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
-                            new BeanPropertyWithId(beanFactory, argument.getRef())
+                            new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
+                            new DependencyWithId(beanFactory, argument.getRef())
                     );
                 } else { // todo parse real type value
                     Class<?> clazz = getClazz(argument.getClassName());
 
                     beanProperties.add(
                         argument.getFieldName() != null ?
-                            new BeanPropertyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
-                            new BeanPropertyWithValue(argument.getValue(), clazz)
+                            new DependencyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
+                            new DependencyWithValue(argument.getValue(), clazz)
                     );
                 }
             }

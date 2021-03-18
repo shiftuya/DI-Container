@@ -1,19 +1,19 @@
-package di.container.beanproperty;
+package di.container.dependency;
 
 import di.container.BeanDescription;
 import di.container.DIContainerException;
 
-public class InnerBeanProperty implements BeanProperty {
+public class InnerDependency implements Dependency {
 
   private String fieldName;
   private final BeanDescription beanDescription;
 
-  public InnerBeanProperty(String fieldName, BeanDescription beanDescription) {
+  public InnerDependency(String fieldName, BeanDescription beanDescription) {
     this.fieldName = fieldName;
     this.beanDescription = beanDescription;
   }
 
-  public InnerBeanProperty(BeanDescription beanDescription) {
+  public InnerDependency(BeanDescription beanDescription) {
     this.beanDescription = beanDescription;
   }
 
