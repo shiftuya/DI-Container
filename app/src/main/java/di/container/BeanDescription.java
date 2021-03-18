@@ -9,8 +9,15 @@ import java.util.List;
 
 public class BeanDescription {
 
-  public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz,
-      boolean isProxy, List<BeanProperty> constructorArgs, List<BeanProperty> setterArgs) {
+  private BeanLifecycle beanLifecycle;
+  private Class<?> clazz;
+  private Object instance;
+  private boolean isProxy;
+  private List<BeanProperty> constructorArgs;
+  private List<BeanProperty> setterArgs;
+
+  public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
+                         List<BeanProperty> constructorArgs, List<BeanProperty> setterArgs) {
     this.beanLifecycle = beanLifecycle;
     this.clazz = clazz;
     this.isProxy = isProxy;
@@ -18,18 +25,8 @@ public class BeanDescription {
     this.setterArgs = setterArgs;
   }
 
-  private BeanLifecycle beanLifecycle;
-
-  private Class<?> clazz;
-
-  private Object instance;
-
-  private boolean isProxy;
-
-  private List<BeanProperty> constructorArgs = new ArrayList<>();
-
-  private List<BeanProperty> setterArgs = new ArrayList<>();
-
+  // todo -o why private getters?
+  // todo -o why unused getters and setters?
   private BeanLifecycle getBeanLifecycle() {
     return beanLifecycle;
   }
@@ -87,20 +84,20 @@ public class BeanDescription {
   }
 
   private Object generateBean() throws DIContainerException {
-    var constr = getConstructor();
-    Object object = null;
+    var constructor = getConstructor(); // todo -o var used only once
+    Object object;
     try {
-      List<Object> args = new ArrayList<>(); // todo what to do - can't throw exceptions from lambda
-      for (var arg : getConstructorArgs()) {
+      List<Object> args = new ArrayList<>(); // todo what to do - can't throw exceptions from lambda; todo -o what???
+      for (BeanProperty arg : getConstructorArgs()) {
         args.add(arg.getBean());
       }
-      object = constr.newInstance(args.toArray());
+      object = constructor.newInstance(args.toArray());
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       throw new DIContainerException("Unable to instantiate bean");
     }
 
-    for (var arg : getSetterArgs()) {
-      String name = "set" + arg.getFieldName().substring(0, 1).toUpperCase() + arg.getFieldName().substring(1);
+    for (BeanProperty arg : getSetterArgs()) {
+      String name = "set" + arg.getFieldName().substring(0, 1).toUpperCase() + arg.getFieldName().substring(1); // todo -o move to Utils.capitalize()
       Method method;
       try {
         method = getClazz().getMethod(name, arg.getClazz());
@@ -119,14 +116,14 @@ public class BeanDescription {
   }
 
   private Constructor<?> getConstructor() {
-    var constructors = getClazz().getConstructors();
+    var constructors = getClazz().getConstructors(); // todo -o var used only once
 
     Constructor<?> constr = null;
 
     for (var constructor : constructors) {
       if (constructor.isVarArgs()) {
         // ... TODO
-      } else {
+      } else { // todo -o else if (...) {
         if (isMatchingConstructor(constructor, getConstructorArgs())) {
           constr = constructor;
           break;

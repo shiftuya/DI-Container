@@ -4,13 +4,22 @@ import di.container.BeanFactory;
 import di.container.DIContainerException;
 
 public class BeanPropertyWithId implements BeanProperty {
-  private BeanFactory parentFactory;
 
-  private String id;
-
-  private Class<?> clazz; // todo delete
-
+  private final BeanFactory parentFactory; // todo -o why parent?
+  private final String id;
+  private Class<?> clazz; // todo -o delete
   private String fieldName;
+
+  public BeanPropertyWithId(BeanFactory parentFactory, String id) {
+    this.parentFactory = parentFactory;
+    this.id = id;
+  }
+
+  public BeanPropertyWithId(BeanFactory parentFactory, String id, String fieldName) {
+    this.parentFactory = parentFactory;
+    this.id = id;
+    this.fieldName = fieldName;
+  }
 
   @Override
   public String getFieldName() {
@@ -25,16 +34,5 @@ public class BeanPropertyWithId implements BeanProperty {
   @Override
   public Class<?> getClazz() {
     return parentFactory.getBeanDescription(id).getClazz();
-  }
-
-  public BeanPropertyWithId(BeanFactory parentFactory, String id) {
-    this.parentFactory = parentFactory;
-    this.id = id;
-  }
-
-  public BeanPropertyWithId(BeanFactory parentFactory, String id, String fieldName) {
-    this.parentFactory = parentFactory;
-    this.id = id;
-    this.fieldName = fieldName;
   }
 }

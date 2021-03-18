@@ -5,26 +5,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BeanFactory {
 
-  private Map<String, BeanDescription> beans;
+  private Map<String, BeanDescription> beans; // todo -o BeanDescriptions
 
-  public void setBeans(Map<String, BeanDescription> beans) {
-    this.beans = new ConcurrentHashMap<>(beans);
-  }
-
-  public Object getBean(String name) throws DIContainerException {
-    var beanDescription = beans.get(name);
+  public Object getBean(String id) throws DIContainerException {
+    var beanDescription = beans.get(id);
     if (beanDescription == null) {
-      throw new DIContainerException("Illegal name!!!");
+      throw new DIContainerException("Illegal id!!!");
     }
 
     return beanDescription.getBean();
   }
 
-  public BeanDescription getBeanDescription(String name) {
-    return beans.get(name);
+  public BeanDescription getBeanDescription(String id) {
+    return beans.get(id);
   }
 
   public Map<String, BeanDescription> getBeans() {
     return beans;
+  }
+
+  public void setBeans(Map<String, BeanDescription> beans) {
+    this.beans = new ConcurrentHashMap<>(beans);
   }
 }

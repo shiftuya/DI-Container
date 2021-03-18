@@ -6,16 +6,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class JsonDIContainer implements DIContainer {
-  BeanFactory beanFactory;
 
-  @Override
-  public <T> T getBean(String name, Class<T> clazz) throws DIContainerException {
-    Object bean = getBean(name);
-    if (clazz.isInstance(bean)) {
-      return (T)bean;
-    }
-    throw new DIContainerException(name + " is not " + clazz.getName());
-  }
+  private final BeanFactory beanFactory;
 
   public JsonDIContainer(BeanFactory beanFactory) {
     this.beanFactory = beanFactory;
@@ -30,8 +22,17 @@ public class JsonDIContainer implements DIContainer {
   }
 
   @Override
-  public Object getBean(String name) throws DIContainerException {
-    return beanFactory.getBean(name);
+  public <T> T getBean(String id, Class<T> clazz) throws DIContainerException {
+    Object bean = getBean(id);
+    if (clazz.isInstance(bean)) {
+      return (T)bean;
+    }
+    throw new DIContainerException(id + " is not " + clazz.getName());
+  }
+
+  @Override
+  public Object getBean(String id) throws DIContainerException {
+    return beanFactory.getBean(id);
   }
 
   @Override
