@@ -9,6 +9,7 @@ import di.container.BeanFactory;
 import di.container.BeanLifecycle;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
+import di.container.dependency.DependencyWithType;
 import di.container.dependency.DependencyWithValue;
 import di.container.dependency.InnerDependency;
 import di.util.Utils;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JsonBeanParser {
 
@@ -39,12 +41,18 @@ public class JsonBeanParser {
         Beans beans = new Gson().fromJson(Utils.getResourceAsString(jsonFileName), Beans.class);
 
         Map<String, BeanDescription> beanMap = new HashMap<>();
+        Set<BeanDescription> beanSet = new HashSet<>();
         for (Bean bean : beans.getBeans()) {
-            beanMap.put(bean.getId(), parseBeanDescription(bean));
+            BeanDescription beanDescription = parseBeanDescription(bean);
+            if (bean.getId() != null) {
+                beanMap.put(bean.getId(), beanDescription);
+            } else {
+                beanSet.add(beanDescription);
+            }
         }
 
         beanFactory.setBeanDescriptions(beanMap);
-        beanFactory.setBeanDescriptionSet(new HashSet<>()); // todo put all beans here
+        beanFactory.setBeanDescriptionSet(beanSet);
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
@@ -78,13 +86,21 @@ public class JsonBeanParser {
                             new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
                             new DependencyWithId(beanFactory, argument.getRef())
                     );
-                } else { // todo parse real type value
+                } else if (argument.getValue() != null) { // todo parse real type value
                     Class<?> clazz = getClazz(argument.getClassName());
 
                     beanProperties.add(
                         argument.getFieldName() != null ?
                             new DependencyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
                             new DependencyWithValue(argument.getValue(), clazz)
+                    );
+                } else {
+                    Class<?> clazz = getClazz(argument.getClassName());
+
+                    beanProperties.add(
+                        argument.getFieldName() != null ?
+                            new DependencyWithType(beanFactory, argument.getFieldName(), clazz) :
+                            new DependencyWithType(beanFactory, clazz)
                     );
                 }
             }

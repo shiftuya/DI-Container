@@ -21,6 +21,9 @@
                     "fieldName": "gender",
                     "className": "java.lang.String",
                     "value": "M"
+                }, {
+                    "fieldName": "car",
+                    "className": "di.jsonparser.ICar"
                 }
             ]
         }, {
@@ -54,6 +57,14 @@
                             }
                         ]
                     }
+                }
+            ]
+        }, {
+            "className": "di.jsonparser.Car",
+            "constructorArguments": [
+                {
+                    "className": "java.lang.String",
+                    "value": "Super Car"
                 }
             ]
         }

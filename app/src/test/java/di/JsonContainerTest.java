@@ -55,6 +55,10 @@ public class JsonContainerTest {
 
     assertNotNull(container.getBean(FullName.class));
 
+    Person john = (Person)container.getBean("personJohn");
+
+    assertEquals("Super Car", john.getCar().getCar());
+
     try {
       container.getBean(Person.class);
       fail();

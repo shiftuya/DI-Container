@@ -3,6 +3,7 @@ package di.jsonparser;
 public class Person {
 
     private FullName fullName;
+    private ICar car;
     private String gender;
     private String age;
 
@@ -27,6 +28,14 @@ public class Person {
 
     public FullName getFullName() {
         return fullName;
+    }
+
+    public ICar getCar() {
+        return car;
+    }
+
+    public void setCar(ICar car) {
+        this.car = car;
     }
 
     public String getGender() {
