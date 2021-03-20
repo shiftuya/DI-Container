@@ -1,11 +1,17 @@
 package di.container;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class BeanFactory {
 
   private Map<String, BeanDescription> beanDescriptions;
+
+  private Set<BeanDescription> beanDescriptionSet;
 
   public Object getBean(String id) throws DIContainerException {
     var beanDescription = beanDescriptions.get(id);
@@ -14,6 +20,19 @@ public class BeanFactory {
     }
 
     return beanDescription.getBean();
+  }
+
+  public Object getBean(Class<?> clazz) throws DIContainerException {
+    List<BeanDescription> descriptions = beanDescriptionSet.stream()
+        .filter(description -> clazz.isAssignableFrom(description.getClazz()))
+        .collect(Collectors.toList());
+    if (descriptions.isEmpty()) {
+      throw new DIContainerException("No beans found");
+    }
+    if (descriptions.size() > 1) {
+      throw new DIContainerException("Too many beans found");
+    }
+    return descriptions.get(0).getBean();
   }
 
   public BeanDescription getBeanDescription(String id) {
@@ -26,5 +45,9 @@ public class BeanFactory {
 
   public void setBeanDescriptions(Map<String, BeanDescription> beanDescriptions) {
     this.beanDescriptions = new ConcurrentHashMap<>(beanDescriptions);
+  }
+
+  public void setBeanDescriptionSet(Set<BeanDescription> beanDescriptionSet) {
+    this.beanDescriptionSet = new HashSet<>(beanDescriptionSet);
   }
 }
