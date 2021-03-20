@@ -7,15 +7,17 @@ public class Argument {
     private String className;
     private String value;
     private Bean bean;
+    private boolean provider = false;
 
     @Override
     public String toString() {
         return "Argument{" +
             "ref='" + ref + '\'' +
             ", fieldName='" + fieldName + '\'' +
-            ", type='" + className + '\'' +
+            ", className='" + className + '\'' +
             ", value='" + value + '\'' +
             ", bean=" + bean +
+            ", provider=" + provider +
             '}';
     }
 
@@ -37,5 +39,9 @@ public class Argument {
 
     public Bean getBean() {
         return bean;
+    }
+
+    public boolean isProvider() {
+        return provider;
     }
 }

@@ -12,6 +12,7 @@ import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 import di.container.dependency.DependencyWithValue;
 import di.container.dependency.InnerDependency;
+import di.container.dependency.ProviderDependency;
 import di.util.Utils;
 
 import java.io.IOException;
@@ -70,43 +71,45 @@ public class JsonBeanParser {
     }
 
     private List<Dependency> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException {
-        List<Dependency> beanProperties = new ArrayList<>();
+        List<Dependency> dependencies = new ArrayList<>();
 
         if (arguments != null) {
             for (Argument argument : arguments) {
+                Dependency dependency;
+
                 if (argument.getBean() != null) {
-                    beanProperties.add(
-                        argument.getFieldName() != null ?
-                            new InnerDependency(argument.getFieldName(), parseBeanDescription(argument.getBean())) :
-                            new InnerDependency(parseBeanDescription(argument.getBean()))
-                    );
+                    dependency = argument.getFieldName() != null ?
+                        new InnerDependency(argument.getFieldName(), parseBeanDescription(argument.getBean())) :
+                        new InnerDependency(parseBeanDescription(argument.getBean()));
                 } else if (argument.getRef() != null) {
-                    beanProperties.add(
-                        argument.getFieldName() != null ?
-                            new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
-                            new DependencyWithId(beanFactory, argument.getRef())
-                    );
+                    dependency = argument.getFieldName() != null ?
+                        new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
+                        new DependencyWithId(beanFactory, argument.getRef());
                 } else if (argument.getValue() != null) { // todo parse real type value
                     Class<?> clazz = getClazz(argument.getClassName());
 
-                    beanProperties.add(
-                        argument.getFieldName() != null ?
-                            new DependencyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
-                            new DependencyWithValue(argument.getValue(), clazz)
-                    );
+                    dependency = argument.getFieldName() != null ?
+                        new DependencyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
+                        new DependencyWithValue(argument.getValue(), clazz);
                 } else {
                     Class<?> clazz = getClazz(argument.getClassName());
 
-                    beanProperties.add(
-                        argument.getFieldName() != null ?
-                            new DependencyWithType(beanFactory, argument.getFieldName(), clazz) :
-                            new DependencyWithType(beanFactory, clazz)
-                    );
+                    dependency = argument.getFieldName() != null ?
+                        new DependencyWithType(beanFactory, argument.getFieldName(), clazz) :
+                        new DependencyWithType(beanFactory, clazz);
                 }
+
+                if (argument.isProvider()) {
+                    dependency = argument.getFieldName() != null ?
+                        new ProviderDependency(dependency, argument.getFieldName()) :
+                        new ProviderDependency(dependency);
+                }
+
+                dependencies.add(dependency);
             }
         }
 
-        return beanProperties;
+        return dependencies;
     }
 
     private Class<?> getClazz(String className) throws ClassNotFoundException {
