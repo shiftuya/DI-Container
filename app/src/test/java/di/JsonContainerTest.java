@@ -1,14 +1,17 @@
 package di;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JsonDIContainer;
+import di.jsonparser.FullName;
 import di.jsonparser.Person;
 import java.util.Arrays;
 import org.junit.Test;
@@ -43,5 +46,20 @@ public class JsonContainerTest {
 
     // Prototype
     assertNotSame(container.getBean("fullNameJohn"), container.getBean("fullNameJohn"));
+  }
+
+  @Test
+  public void beanGenerationByClassTest() throws DIContainerException {
+
+    DIContainer container = new JsonDIContainer("person.json");
+
+    assertNotNull(container.getBean(FullName.class));
+
+    try {
+      container.getBean(Person.class);
+      fail();
+    } catch (DIContainerException expected) {
+
+    }
   }
 }

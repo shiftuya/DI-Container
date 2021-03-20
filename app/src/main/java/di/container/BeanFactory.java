@@ -1,5 +1,6 @@
 package di.container;
 
+import com.google.common.collect.Sets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,8 @@ public class BeanFactory {
   }
 
   public Object getBean(Class<?> clazz) throws DIContainerException {
-    List<BeanDescription> descriptions = beanDescriptionSet.stream()
+    List<BeanDescription> descriptions = Sets.union(
+        beanDescriptionSet, new HashSet<>(beanDescriptions.values())).stream()
         .filter(description -> clazz.isAssignableFrom(description.getClazz()))
         .collect(Collectors.toList());
     if (descriptions.isEmpty()) {

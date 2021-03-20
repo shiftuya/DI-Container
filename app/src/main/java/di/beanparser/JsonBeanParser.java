@@ -16,6 +16,7 @@ import di.util.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class JsonBeanParser {
         }
 
         beanFactory.setBeanDescriptions(beanMap);
+        beanFactory.setBeanDescriptionSet(new HashSet<>()); // todo put all beans here
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
