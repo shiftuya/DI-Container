@@ -4,7 +4,6 @@ import di.beanparser.JsonBeanParser;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 public class JsonDIContainer implements DIContainer {
 
@@ -43,7 +42,6 @@ public class JsonDIContainer implements DIContainer {
 
   @Override
   public <T> T getBean(Class<T> clazz) throws DIContainerException {
-
     return (T)beanFactory.getBean(clazz);
   }
 }

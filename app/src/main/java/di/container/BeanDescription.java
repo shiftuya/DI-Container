@@ -1,5 +1,9 @@
 package di.container;
 
+import di.container.beaninstance.BeanInstance;
+import di.container.beaninstance.PrototypeInstance;
+import di.container.beaninstance.SingletonInstance;
+import di.container.beaninstance.ThreadInstance;
 import di.container.dependency.Dependency;
 import di.util.Utils;
 import java.lang.reflect.Constructor;
@@ -16,10 +20,18 @@ public class BeanDescription {
   private final boolean isProxy;
   private final List<Dependency> constructorArgs;
   private final List<Dependency> setterArgs;
+  private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
       List<Dependency> constructorArgs, List<Dependency> setterArgs) {
     this.beanLifecycle = beanLifecycle;
+
+    beanInstance = switch (beanLifecycle) {
+      case THREAD -> new ThreadInstance();
+      case PROTOTYPE -> new PrototypeInstance();
+      case SINGLETON -> new SingletonInstance();
+    };
+
     this.clazz = clazz;
     this.isProxy = isProxy;
     this.constructorArgs = constructorArgs;
@@ -31,17 +43,10 @@ public class BeanDescription {
   }
 
   public Object getBean() throws DIContainerException {
-    Object bean;
-    switch (beanLifecycle) {
-      case SINGLETON -> {
-        if (instance == null) {
-          instance = generateBean();
-        }
-        bean = instance;
-      }
-      case PROTOTYPE -> bean = generateBean();
-      case THREAD -> throw new DIContainerException("I don't know what is that yet");
-      default -> throw new DIContainerException("Unknown lifecycle");
+    Object bean = beanInstance.get();
+    if (bean == null) {
+      bean = generateBean();
+      beanInstance.put(bean);
     }
     return bean;
   }
