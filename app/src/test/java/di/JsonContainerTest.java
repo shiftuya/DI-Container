@@ -12,6 +12,7 @@ import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JsonDIContainer;
 import di.jsonparser.FullName;
+import di.jsonparser.IPassport;
 import di.jsonparser.Person;
 import java.util.Arrays;
 import org.junit.Test;
@@ -65,5 +66,20 @@ public class JsonContainerTest {
     } catch (DIContainerException expected) {
 
     }
+  }
+
+  @Test
+  public void providerTest() throws DIContainerException {
+    DIContainer container = new JsonDIContainer("person.json");
+
+    Person john = container.getBean("personJohn", Person.class);
+
+    IPassport passport = john.getPassport();
+
+    assertNotNull(passport);
+
+    assertEquals("2281488666", passport.getNumber());
+
+    assertNotSame(john.getPassport(), john.getPassport());
   }
 }

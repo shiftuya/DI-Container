@@ -22,6 +22,10 @@ public class Person {
         this.passport = passport;
     }
 
+    public IPassport getPassport() {
+        return passport.get();
+    }
+
     public void setGender(String gender) {
         this.gender = gender;
     }

@@ -71,6 +71,7 @@
             ]
         }, {
             "className": "di.jsonparser.RussianPassport",
+            "lifecycle": "prototype",
             "constructorArguments": [
                 {
                     "className": "java.lang.String",
