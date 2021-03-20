@@ -1,6 +1,8 @@
 package di.container;
 
 import com.google.common.collect.Sets;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,6 @@ public class BeanFactory {
   }
 
   public void setBeanDescriptionSet(Set<BeanDescription> beanDescriptionSet) {
-    this.beanDescriptionSet = new HashSet<>(beanDescriptionSet);
+    this.beanDescriptionSet = Collections.synchronizedSet(new HashSet<>(beanDescriptionSet));
   }
 }
