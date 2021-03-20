@@ -16,10 +16,10 @@ public class BeanDescription {
 
   private final BeanLifecycle beanLifecycle;
   private final Class<?> clazz;
-  private Object instance;
   private final boolean isProxy;
   private final List<Dependency> constructorArgs;
   private final List<Dependency> setterArgs;
+  private List<Dependency> fieldProviders;
   private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
@@ -78,6 +78,14 @@ public class BeanDescription {
         e.printStackTrace();
       }
     }
+
+/*    for (var entry : fieldProviders) {
+      try {
+        getClazz().getField(entry.getFieldName()).set(object, new MyProvider<>(this));
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        throw new DIContainerException("No field");
+      }
+    }*/
 
     return object;
   }

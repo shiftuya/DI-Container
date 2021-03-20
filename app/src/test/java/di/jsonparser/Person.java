@@ -1,11 +1,14 @@
 package di.jsonparser;
 
+import javax.inject.Provider;
+
 public class Person {
 
     private FullName fullName;
     private ICar car;
     private String gender;
     private String age;
+    private Provider<IPassport> passport;
 
     public Person() {}
 
@@ -13,9 +16,10 @@ public class Person {
         this.fullName = fullName;
     }
 
-    public Person(FullName fullName, String gender) {
+    public Person(FullName fullName, String gender, Provider<IPassport> passport) {
         this.fullName = fullName;
         this.gender = gender;
+        this.passport = passport;
     }
 
     public void setGender(String gender) {

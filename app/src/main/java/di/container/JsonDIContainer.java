@@ -8,7 +8,7 @@ public class JsonDIContainer extends GenericDIContainer {
     try {
       beanFactory = new JsonBeanParser(filename).getBeanFactory();
     } catch (IOException | ClassNotFoundException e) {
-      throw new DIContainerException("Unable to parse file: " + filename);
+      throw new DIContainerException("Unable to parse file: " + filename + " " + e);
     }
   }
 }
