@@ -27,7 +27,7 @@ public class DependencyWithType implements Dependency {
 
   @Override
   public Object getBean() throws DIContainerException {
-    return null;
+    return beanFactory.getBean(clazz);
   }
 
   @Override
