@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
+import di.container.GenericDIContainer;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithValue;
@@ -33,7 +34,7 @@ public class BeanGenerationTest {
         map.put("prototype", prototype);
         BeanFactory beanFactory = new BeanFactory();
         beanFactory.setBeanDescriptions(map);
-        DIContainer container = new JsonDIContainer(beanFactory);
+        DIContainer container = new GenericDIContainer(beanFactory);
 
         try {
             SimpleClass bean1 = container.getBean("prototype", SimpleClass.class);
@@ -60,7 +61,7 @@ public class BeanGenerationTest {
         map.put("singleton", singleton);
         BeanFactory beanFactory = new BeanFactory();
         beanFactory.setBeanDescriptions(map);
-        DIContainer container = new JsonDIContainer(beanFactory);
+        DIContainer container = new GenericDIContainer(beanFactory);
 
         try {
             SimpleClass bean1 = container.getBean("singleton", SimpleClass.class);
@@ -97,7 +98,7 @@ public class BeanGenerationTest {
 
         beanFactory.setBeanDescriptions(map);
 
-        DIContainer container = new JsonDIContainer(beanFactory);
+        DIContainer container = new GenericDIContainer(beanFactory);
 
         try {
             ComplexClass bean = container.getBean("complexSingleton", ComplexClass.class);
