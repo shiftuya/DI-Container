@@ -1,5 +1,6 @@
 package di.beanparser;
 
+import com.google.common.collect.Sets;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
@@ -28,13 +29,16 @@ import java.util.stream.Stream;
 
 public class AnnotationBeanParser {
 
+    private Class<?> startupClass;
     private final BeanFactory beanFactory = new BeanFactory();
 
     public AnnotationBeanParser() throws ClassNotFoundException, IOException, URISyntaxException {
-        this("");
+        this("", null);
     }
 
-    public AnnotationBeanParser(String directory) throws IOException, URISyntaxException, ClassNotFoundException {
+    public AnnotationBeanParser(String directory, Class<?> startupClass) throws IOException, URISyntaxException, ClassNotFoundException {
+        this.startupClass = startupClass;
+
         Map<String, BeanDescription> beanMap = new HashMap<>();
         Set<BeanDescription> beanSet = new HashSet<>();
 
@@ -50,8 +54,11 @@ public class AnnotationBeanParser {
             for (Constructor<?> constructor : clazz.getConstructors()) {
                 Inject injectAnnotation = constructor.getAnnotation(Inject.class);
                 if (injectAnnotation == null) {
+                    System.out.println("NO inject: " + clazz.getName());
                     continue;
                 }
+
+                System.out.println("QQQ inject: " + clazz.getName());
 
                 if (constructor.isVarArgs()) {
                     // todo
@@ -65,7 +72,7 @@ public class AnnotationBeanParser {
             }
 
             beanSet.add(new BeanDescription(
-                BeanLifecycle.SINGLETON, // todo
+                BeanLifecycle.SINGLETON,
                 clazz,
                 false, // todo
                 dependencies,
@@ -75,6 +82,10 @@ public class AnnotationBeanParser {
 
         beanFactory.setBeanDescriptions(beanMap);
         beanFactory.setBeanDescriptionSet(beanSet);
+    }
+
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
 
     private Set<String> getClassFileNames(String directory) throws IOException, URISyntaxException {
@@ -100,15 +111,33 @@ public class AnnotationBeanParser {
 
             return set;
         } else {
+            Set<String> set1;
             Path codeSourcePath = codeSourceFile.toPath();
             try (Stream<Path> stream = Files.walk(codeSourcePath)) {
-                return stream
+                set1 = stream
                     .filter(path -> !Files.isDirectory(path) && path.toString().endsWith(".class"))
                     .map(codeSourcePath::relativize)
                     .filter(path -> directory.isEmpty() || path.startsWith(directoryPath))
                     .map(Path::toString)
                     .collect(Collectors.toSet());
             }
+
+            Set<String> set2 = new HashSet<>();
+            if (startupClass != null) {
+                System.out.println("WWWWW");
+                codeSourceFile = new File(startupClass.getProtectionDomain().getCodeSource().getLocation().toURI());
+                codeSourcePath = codeSourceFile.toPath();
+                try (Stream<Path> stream = Files.walk(codeSourcePath)) {
+                    set2 = stream
+                        .filter(path -> !Files.isDirectory(path) && path.toString().endsWith(".class"))
+                        .map(codeSourcePath::relativize)
+                        .filter(path -> directory.isEmpty() || path.startsWith(directoryPath))
+                        .map(Path::toString)
+                        .collect(Collectors.toSet());
+                }
+            }
+
+            return Sets.union(set1, set2);
         }
     }
 }
