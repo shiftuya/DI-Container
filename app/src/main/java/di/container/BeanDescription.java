@@ -23,7 +23,8 @@ public class BeanDescription {
   private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
-      List<Dependency> constructorArgs, List<Dependency> setterArgs, List<Dependency> fieldDependencies) {
+      List<Dependency> constructorArgs, List<Dependency> setterArgs,
+      List<Dependency> fieldDependencies) {
     this.beanLifecycle = beanLifecycle;
 
     beanInstance = switch (beanLifecycle) {
@@ -80,13 +81,15 @@ public class BeanDescription {
       }
     }
 
-/*    for (var entry : fieldProviders) {
+    for (Dependency entry : fieldDependencies) {
       try {
-        getClazz().getField(entry.getFieldName()).set(object, new MyProvider<>(this));
+        getClazz().getField(entry.getFieldName()).set(object, entry.getBean());
       } catch (NoSuchFieldException | IllegalAccessException e) {
-        throw new DIContainerException("No field");
+        throw new DIContainerException(
+            "Field \"" + entry.getFieldName() + "\n not found in class \"" + getClazz().getName()
+                + "\"");
       }
-    }*/
+    }
 
     return object;
   }
