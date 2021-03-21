@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JsonBeanParser {
+public class JsonBeanParser implements BeanParser {
 
     private static final Map<String, Class<?>> PRIMITIVES = new HashMap<>() {{
         put("boolean", boolean.class);
@@ -54,6 +54,11 @@ public class JsonBeanParser {
 
         beanFactory.setBeanDescriptions(beanMap);
         beanFactory.setBeanDescriptionSet(beanSet);
+    }
+
+    @Override
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
@@ -120,9 +125,5 @@ public class JsonBeanParser {
         }
 
         return clazz;
-    }
-
-    public BeanFactory getBeanFactory() {
-        return beanFactory;
     }
 }
