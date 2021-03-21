@@ -2,14 +2,19 @@ package di.beanparser;
 
 import di.container.BeanDescription;
 import di.container.BeanFactory;
-import di.container.BeanLifecycle;
+import di.container.DIContainerException;
+import di.container.annotations.Bean;
 import di.container.dependency.Dependency;
+import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,19 +36,19 @@ public class AnnotationBeanParser implements BeanParser {
     private final Class<?>[] startupClasses;
     private final BeanFactory beanFactory = new BeanFactory();
 
-    public AnnotationBeanParser() throws IOException, URISyntaxException {
+    public AnnotationBeanParser() throws IOException, URISyntaxException, DIContainerException {
         this("", new Class<?>[] {});
     }
 
-    public AnnotationBeanParser(Class<?>... startupClasses) throws IOException, URISyntaxException {
+    public AnnotationBeanParser(Class<?>... startupClasses) throws IOException, URISyntaxException, DIContainerException {
         this("", startupClasses);
     }
 
-    public AnnotationBeanParser(String directory) throws IOException, URISyntaxException {
+    public AnnotationBeanParser(String directory) throws IOException, URISyntaxException, DIContainerException {
         this(directory, new Class<?>[] {});
     }
 
-    public AnnotationBeanParser(String directory, Class<?>... startupClasses) throws IOException, URISyntaxException {
+    public AnnotationBeanParser(String directory, Class<?>... startupClasses) throws IOException, URISyntaxException, DIContainerException {
         this.startupClasses = startupClasses;
 
         Map<String, BeanDescription> beanMap = new HashMap<>();
@@ -56,32 +61,74 @@ public class AnnotationBeanParser implements BeanParser {
 
             try {
                 Class<?> clazz = Class.forName(classFileName);
-                List<Dependency> dependencies = new ArrayList<>();
+
+                Bean beanAnnotation = clazz.getAnnotation(Bean.class);
+                if (beanAnnotation == null) {
+                    continue;
+                }
+
+                Constructor<?> injectedConstructor = null;
                 for (Constructor<?> constructor : clazz.getConstructors()) {
                     Inject injectAnnotation = constructor.getAnnotation(Inject.class);
                     if (injectAnnotation == null) {
                         continue;
                     }
 
-                    if (constructor.isVarArgs()) {
-                        // todo
-                    } else {
-                        for (Class<?> dependencyClass : constructor.getParameterTypes()) {
-                            dependencies.add(new DependencyWithType(beanFactory, dependencyClass));
-                        }
+                    if (injectedConstructor != null) {
+                        throw new DIContainerException("Multiple injected constructors");
                     }
 
-                    break; // todo throw if multiple injected constructors
+                    injectedConstructor = constructor;
                 }
 
-                beanSet.add(new BeanDescription(
-                    BeanLifecycle.SINGLETON,
+                List<Dependency> constructorDependencies = new ArrayList<>();
+                if (injectedConstructor != null) {
+                    if (injectedConstructor.isVarArgs()) {
+                        // todo VarArgs
+                    } else {
+                        for (Parameter parameter : injectedConstructor.getParameters()) {
+                            Named namedAnnotation = parameter.getAnnotation(Named.class);
+                            constructorDependencies.add(
+                                namedAnnotation == null ?
+                                    new DependencyWithType(beanFactory, parameter.getType()) :
+                                    new DependencyWithId(beanFactory, namedAnnotation.value())
+                            );
+                        }
+                    }
+                }
+
+                List<Dependency> setterDependencies = new ArrayList<>(); // todo setterDependencies
+
+                List<Dependency> fieldDependencies = new ArrayList<>();
+                for (Field field : clazz.getDeclaredFields()) {
+                    Inject injectAnnotation = field.getAnnotation(Inject.class);
+                    if (injectAnnotation == null) {
+                        continue;
+                    }
+
+                    Named namedAnnotation = field.getAnnotation(Named.class);
+                    fieldDependencies.add(
+                        namedAnnotation == null ?
+                            new DependencyWithType(beanFactory, field.getType()) :
+                            new DependencyWithId(beanFactory, namedAnnotation.value())
+                    );
+                }
+
+                BeanDescription beanDescription = new BeanDescription(
+                    beanAnnotation.lifecycle(),
                     clazz,
-                    false, // todo
-                    dependencies,
-                    new ArrayList<>(), // todo
-                    new ArrayList<>() // todo field args
-                ));
+                    false, // todo delete?
+                    constructorDependencies,
+                    setterDependencies,
+                    fieldDependencies
+                );
+
+                Named namedAnnotation = clazz.getAnnotation(Named.class);
+                if (namedAnnotation == null) {
+                    beanSet.add(beanDescription);
+                } else {
+                    beanMap.put(namedAnnotation.value(), beanDescription);
+                }
             } catch (ClassNotFoundException e) {
                 System.out.println("ClassNotFoundException: " + classFileName);
             }
