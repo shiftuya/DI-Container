@@ -1,6 +1,7 @@
 package di;
 
 import di.beanparser.AnnotationBeanParser;
+import di.beanparser.BeanParser;
 import di.container.BeanFactory;
 import di.container.DIContainer;
 import di.container.DIContainerException;
@@ -26,12 +27,12 @@ import static org.junit.Assert.fail;
 public class AnnotationContainerTest {
 
   @Test
-  public void jsonContainerTest() throws DIContainerException, ClassNotFoundException, IOException, URISyntaxException {
-    AnnotationBeanParser annotationBeanParser = new AnnotationBeanParser("", AnnotationContainerTest.class);
-
-    DIContainer diContainer = new GenericDIContainer(annotationBeanParser.getBeanFactory());
+  public void jsonContainerTest() throws DIContainerException, IOException, URISyntaxException {
+    DIContainer diContainer = new GenericDIContainer(new AnnotationBeanParser(AnnotationContainerTest.class).getBeanFactory());
 
     Person person = diContainer.getBean(Person.class);
-    System.out.println(person.getFullName().getFirstName());
+
+    assertEquals("Ivan", person.getFullName().getFirstName());
+    assertEquals("Shatalov", person.getFullName().getSecondName());
   }
 }
