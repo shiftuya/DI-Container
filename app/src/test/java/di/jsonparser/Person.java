@@ -5,7 +5,7 @@ import di.container.annotations.Bean;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-@Bean()
+@Bean
 public class Person {
 
     @Inject

@@ -1,7 +1,10 @@
 package di.jsonparser;
 
+import di.container.annotations.Bean;
+
 import javax.inject.Inject;
 
+@Bean
 public class FullName {
 
     private String firstName;
