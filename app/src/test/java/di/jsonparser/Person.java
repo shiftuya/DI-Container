@@ -14,6 +14,11 @@ public class Person {
     private String gender;
     private String age;
     private Provider<IPassport> passport;
+    private String height;
+
+    public String getHeight() {
+        return height;
+    }
 
     public Person() {}
 

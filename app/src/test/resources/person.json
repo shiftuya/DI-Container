@@ -27,6 +27,13 @@
                     "fieldName": "car",
                     "className": "di.jsonparser.ICar"
                 }
+            ],
+            "fieldValues": [
+                {
+                    "fieldName": "height",
+                    "className": "java.lang.String",
+                    "value": "179"
+                }
             ]
         }, {
             "id": "fullNameJohn",
