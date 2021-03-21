@@ -7,6 +7,7 @@ import di.container.beaninstance.ThreadInstance;
 import di.container.dependency.Dependency;
 import di.util.Utils;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -83,7 +84,9 @@ public class BeanDescription {
 
     for (Dependency entry : fieldDependencies) {
       try {
-        getClazz().getField(entry.getFieldName()).set(object, entry.getBean());
+        Field field = getClazz().getDeclaredField(entry.getFieldName());
+        field.setAccessible(true);
+        field.set(object, entry.getBean());
       } catch (NoSuchFieldException | IllegalAccessException e) {
         throw new DIContainerException(
             "Field \"" + entry.getFieldName() + "\n not found in class \"" + getClazz().getName()
