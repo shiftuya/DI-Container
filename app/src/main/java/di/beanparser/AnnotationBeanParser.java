@@ -72,26 +72,38 @@ public class AnnotationBeanParser implements BeanParser {
                 }
 
                 Constructor<?> injectedConstructor = null;
-                for (Constructor<?> constructor : clazz.getConstructors()) {
-                    Inject injectAnnotation = constructor.getAnnotation(Inject.class);
-                    if (injectAnnotation == null) {
-                        continue;
+                Constructor<?>[] constructors = clazz.getConstructors();
+
+                if (constructors.length == 0) {
+                    throw new DIContainerException("Bean has no public constructors");
+                }
+
+                if (constructors.length == 1) {
+                    injectedConstructor = constructors[0];
+                } else {
+                    for (Constructor<?> constructor : constructors) {
+                        Inject injectAnnotation = constructor.getAnnotation(Inject.class);
+                        if (injectAnnotation == null) {
+                            continue;
+                        }
+
+                        if (injectedConstructor != null) {
+                            throw new DIContainerException("Bean has multiple injected constructors");
+                        }
+
+                        injectedConstructor = constructor;
                     }
 
-                    if (injectedConstructor != null) {
-                        throw new DIContainerException("Multiple injected constructors");
+                    if (injectedConstructor == null) {
+                        throw new DIContainerException("Bean has multiple public constructors and none of them is injected");
                     }
-
-                    injectedConstructor = constructor;
                 }
 
                 List<Dependency> constructorDependencies = new ArrayList<>();
-                if (injectedConstructor != null) {
-                    if (injectedConstructor.isVarArgs()) {
-                        // todo VarArgs
-                    } else {
-                        constructorDependencies = getDependencies(injectedConstructor);
-                    }
+                if (injectedConstructor.isVarArgs()) {
+                    // todo VarArgs
+                } else {
+                    constructorDependencies = getDependencies(injectedConstructor);
                 }
 
                 List<InjectableMethod> injectableMethods = new ArrayList<>();
