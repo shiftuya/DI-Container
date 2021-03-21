@@ -27,7 +27,7 @@ public class BeanGenerationTest {
         Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
         BeanDescription prototype = new BeanDescription(BeanLifecycle.PROTOTYPE, SimpleClass.class,
-            false, Lists.asList(stringArg, new Dependency[0]), new ArrayList<>());
+            false, Lists.asList(stringArg, new Dependency[0]), new ArrayList<>(), new ArrayList<>());
 
 
         Map<String, BeanDescription> map = new HashMap<>();
@@ -55,7 +55,7 @@ public class BeanGenerationTest {
         Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
         Dependency intArg = new DependencyWithValue("number", number, int.class);
         BeanDescription singleton = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
-            Lists.newArrayList(stringArg), Lists.newArrayList(intArg));
+            Lists.newArrayList(stringArg), Lists.newArrayList(intArg), new ArrayList<>());
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
@@ -82,7 +82,7 @@ public class BeanGenerationTest {
         Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
         BeanDescription field = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
-            Lists.newArrayList(stringArg), new ArrayList<>());
+            Lists.newArrayList(stringArg), new ArrayList<>(), new ArrayList<>());
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", field);
@@ -92,7 +92,7 @@ public class BeanGenerationTest {
 
         Dependency complexSingletonConstructorProperty = new DependencyWithId(beanFactory, "singleton");
         BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON, ComplexClass.class,
-            false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>());
+            false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>(), new ArrayList<>());
 
         map.put("complexSingleton", complexSingleton);
 

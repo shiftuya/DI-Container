@@ -76,7 +76,8 @@ public class AnnotationBeanParser {
                 clazz,
                 false, // todo
                 dependencies,
-                new ArrayList<>() // todo
+                new ArrayList<>(), // todo
+                new ArrayList<>() // todo field args
             ));
         }
 

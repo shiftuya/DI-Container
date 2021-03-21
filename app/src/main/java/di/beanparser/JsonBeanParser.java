@@ -66,7 +66,8 @@ public class JsonBeanParser {
             getClazz(bean.getClassName()),
             bean.isProxy(),
             parseBeanProperties(bean.getConstructorArguments()),
-            parseBeanProperties(bean.getSetterArguments())
+            parseBeanProperties(bean.getSetterArguments()),
+            new ArrayList<>() // todo field args
         );
     }
 

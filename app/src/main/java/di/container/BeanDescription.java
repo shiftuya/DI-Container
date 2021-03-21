@@ -19,11 +19,11 @@ public class BeanDescription {
   private final boolean isProxy;
   private final List<Dependency> constructorArgs;
   private final List<Dependency> setterArgs;
-  private List<Dependency> fieldProviders;
+  private List<Dependency> fieldDependencies;
   private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
-      List<Dependency> constructorArgs, List<Dependency> setterArgs) {
+      List<Dependency> constructorArgs, List<Dependency> setterArgs, List<Dependency> fieldDependencies) {
     this.beanLifecycle = beanLifecycle;
 
     beanInstance = switch (beanLifecycle) {
@@ -36,6 +36,7 @@ public class BeanDescription {
     this.isProxy = isProxy;
     this.constructorArgs = constructorArgs;
     this.setterArgs = setterArgs;
+    this.fieldDependencies = fieldDependencies;
   }
 
   public Class<?> getClazz() {
