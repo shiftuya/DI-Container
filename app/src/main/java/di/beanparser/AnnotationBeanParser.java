@@ -9,9 +9,11 @@ import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 import di.container.dependency.GenericInjectableMethod;
 import di.container.dependency.InjectableMethod;
+import di.container.dependency.ProviderDependency;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -19,6 +21,7 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -123,12 +126,30 @@ public class AnnotationBeanParser implements BeanParser {
                         continue;
                     }
 
-                    Named namedAnnotation = field.getAnnotation(Named.class);
-                    fieldDependencies.add(
-                        namedAnnotation == null ?
+                    Dependency dependency;
+                    if (Provider.class.isAssignableFrom(field.getType())) {
+                        try {
+                            ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                            Class<?> actualType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+
+                            Named namedAnnotation = field.getAnnotation(Named.class);
+                            dependency = new ProviderDependency(
+                                namedAnnotation == null ?
+                                    new DependencyWithType(beanFactory, actualType) :
+                                    new DependencyWithId(beanFactory, namedAnnotation.value()),
+                                field.getName()
+                            );
+                        } catch (ClassCastException e) {
+                            throw new DIContainerException(clazz.getName() + " has raw injected Provider field: " + field.getName());
+                        }
+                    } else {
+                        Named namedAnnotation = field.getAnnotation(Named.class);
+                        dependency = namedAnnotation == null ?
                             new DependencyWithType(beanFactory, field.getType()) :
-                            new DependencyWithId(beanFactory, namedAnnotation.value())
-                    );
+                            new DependencyWithId(beanFactory, namedAnnotation.value());
+                    }
+
+                    fieldDependencies.add(dependency);
                 }
 
                 BeanDescription beanDescription = new BeanDescription(
