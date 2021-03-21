@@ -1,6 +1,5 @@
 package di.beanparser;
 
-import com.google.common.collect.Sets;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
@@ -16,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,118 +27,123 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AnnotationBeanParser {
+public class AnnotationBeanParser implements BeanParser {
 
-    private Class<?> startupClass;
+    private final Class<?>[] startupClasses;
     private final BeanFactory beanFactory = new BeanFactory();
 
     public AnnotationBeanParser() throws ClassNotFoundException, IOException, URISyntaxException {
-        this("", null);
+        this("", new Class<?>[] {});
     }
 
-    public AnnotationBeanParser(String directory, Class<?> startupClass) throws IOException, URISyntaxException, ClassNotFoundException {
-        this.startupClass = startupClass;
+    public AnnotationBeanParser(Class<?>... startupClasses) throws IOException, URISyntaxException {
+        this("", startupClasses);
+    }
+
+    public AnnotationBeanParser(String directory) throws IOException, URISyntaxException {
+        this(directory, new Class<?>[] {});
+    }
+
+    public AnnotationBeanParser(String directory, Class<?>... startupClasses) throws IOException, URISyntaxException {
+        this.startupClasses = startupClasses;
 
         Map<String, BeanDescription> beanMap = new HashMap<>();
         Set<BeanDescription> beanSet = new HashSet<>();
 
-        for (String classFileName : getClassFileNames(directory)) { // "di/container"
+        for (String classFileName : getClassFileNames(directory)) {
             classFileName = classFileName
                 .replaceAll(".class$", "")
                 .replaceAll("\\\\", ".");
 
-            System.out.println(classFileName);
-
-            Class<?> clazz = Class.forName(classFileName);
-            List<Dependency> dependencies = new ArrayList<>();
-            for (Constructor<?> constructor : clazz.getConstructors()) {
-                Inject injectAnnotation = constructor.getAnnotation(Inject.class);
-                if (injectAnnotation == null) {
-                    System.out.println("NO inject: " + clazz.getName());
-                    continue;
-                }
-
-                System.out.println("QQQ inject: " + clazz.getName());
-
-                if (constructor.isVarArgs()) {
-                    // todo
-                } else {
-                    for (Class<?> dependencyClass : constructor.getParameterTypes()) {
-                        dependencies.add(new DependencyWithType(beanFactory, dependencyClass));
+            try {
+                Class<?> clazz = Class.forName(classFileName);
+                List<Dependency> dependencies = new ArrayList<>();
+                for (Constructor<?> constructor : clazz.getConstructors()) {
+                    Inject injectAnnotation = constructor.getAnnotation(Inject.class);
+                    if (injectAnnotation == null) {
+                        continue;
                     }
+
+                    if (constructor.isVarArgs()) {
+                        // todo
+                    } else {
+                        for (Class<?> dependencyClass : constructor.getParameterTypes()) {
+                            dependencies.add(new DependencyWithType(beanFactory, dependencyClass));
+                        }
+                    }
+
+                    break; // todo throw if multiple injected constructors
                 }
 
-                break; // todo throw if multiple injected constructors
+                beanSet.add(new BeanDescription(
+                    BeanLifecycle.SINGLETON,
+                    clazz,
+                    false, // todo
+                    dependencies,
+                    new ArrayList<>(), // todo
+                    new ArrayList<>() // todo field args
+                ));
+            } catch (ClassNotFoundException e) {
+                System.out.println("ClassNotFoundException: " + classFileName);
             }
-
-            beanSet.add(new BeanDescription(
-                BeanLifecycle.SINGLETON,
-                clazz,
-                false, // todo
-                dependencies,
-                new ArrayList<>(), // todo
-                new ArrayList<>() // todo field args
-            ));
         }
 
         beanFactory.setBeanDescriptions(beanMap);
         beanFactory.setBeanDescriptionSet(beanSet);
     }
 
+    @Override
     public BeanFactory getBeanFactory() {
         return beanFactory;
     }
 
     private Set<String> getClassFileNames(String directory) throws IOException, URISyntaxException {
-        Path directoryPath = Paths.get(directory);
         File codeSourceFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
 
         if (!codeSourceFile.isDirectory() && codeSourceFile.toString().endsWith(".jar")) {
-            JarFile jarFile = new JarFile(codeSourceFile);
+            return getJarFileClassFileNames(directory, codeSourceFile);
+        } else {
+            Set<String> set = getDirectoryClassFileNames(directory, codeSourceFile);
 
-            Set<String> set = new HashSet<>();
-
-            Enumeration<JarEntry> jarEntries = jarFile.entries();
-            while (jarEntries.hasMoreElements()) {
-                String jarEntryName = jarEntries.nextElement().getName();
-                Path jarEntryPath = Paths.get(jarEntryName);
-
-                if ((!directory.isEmpty() && !jarEntryPath.startsWith(directoryPath)) || !jarEntryName.endsWith(".class")) {
-                    continue;
-                }
-
-                set.add(jarEntryPath.toString());
+            for (Class<?> clazz : startupClasses) {
+                set.addAll(getDirectoryClassFileNames(directory, new File(
+                    clazz.getProtectionDomain().getCodeSource().getLocation().toURI())));
             }
 
             return set;
-        } else {
-            Set<String> set1;
-            Path codeSourcePath = codeSourceFile.toPath();
-            try (Stream<Path> stream = Files.walk(codeSourcePath)) {
-                set1 = stream
-                    .filter(path -> !Files.isDirectory(path) && path.toString().endsWith(".class"))
-                    .map(codeSourcePath::relativize)
-                    .filter(path -> directory.isEmpty() || path.startsWith(directoryPath))
-                    .map(Path::toString)
-                    .collect(Collectors.toSet());
+        }
+    }
+
+    private Set<String> getJarFileClassFileNames(String directory, File codeSourceFile) throws IOException {
+        Path directoryPath = Paths.get(directory);
+        JarFile jarFile = new JarFile(codeSourceFile);
+
+        Set<String> set = new HashSet<>();
+
+        for (JarEntry jarEntry : Collections.list(jarFile.entries())) {
+            String jarEntryName = jarEntry.getName();
+            Path jarEntryPath = Paths.get(jarEntryName);
+
+            if ((!directory.isEmpty() && !jarEntryPath.startsWith(directoryPath)) || !jarEntryName.endsWith(".class")) {
+                continue;
             }
 
-            Set<String> set2 = new HashSet<>();
-            if (startupClass != null) {
-                System.out.println("WWWWW");
-                codeSourceFile = new File(startupClass.getProtectionDomain().getCodeSource().getLocation().toURI());
-                codeSourcePath = codeSourceFile.toPath();
-                try (Stream<Path> stream = Files.walk(codeSourcePath)) {
-                    set2 = stream
-                        .filter(path -> !Files.isDirectory(path) && path.toString().endsWith(".class"))
-                        .map(codeSourcePath::relativize)
-                        .filter(path -> directory.isEmpty() || path.startsWith(directoryPath))
-                        .map(Path::toString)
-                        .collect(Collectors.toSet());
-                }
-            }
+            set.add(jarEntryPath.toString());
+        }
 
-            return Sets.union(set1, set2);
+        return set;
+    }
+
+    private Set<String> getDirectoryClassFileNames(String directory, File codeSourceFile) throws IOException {
+        Path directoryPath = Paths.get(directory);
+        Path codeSourcePath = codeSourceFile.toPath();
+        try (Stream<Path> stream = Files.walk(codeSourcePath)) {
+            return stream
+                .filter(path -> !Files.isDirectory(path) && path.toString().endsWith(".class"))
+                .map(codeSourcePath::relativize)
+                .filter(path -> directory.isEmpty() || path.startsWith(directoryPath))
+                .map(Path::toString)
+                .collect(Collectors.toSet());
         }
     }
 }
