@@ -11,6 +11,7 @@ import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 import di.container.dependency.DependencyWithValue;
+import di.container.dependency.InjectableSetterMethod;
 import di.container.dependency.InnerDependency;
 import di.container.dependency.ProviderDependency;
 import di.util.Utils;
@@ -22,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JsonBeanParser implements BeanParser {
 
@@ -71,8 +73,8 @@ public class JsonBeanParser implements BeanParser {
             getClazz(bean.getClassName()),
             bean.isProxy(),
             parseBeanProperties(bean.getConstructorArguments()),
-            parseBeanProperties(bean.getSetterArguments()),
-            parseBeanProperties(bean.getFields())
+            parseBeanProperties(bean.getFields()),
+            parseBeanProperties(bean.getSetterArguments()).stream().map(InjectableSetterMethod::new).collect(Collectors.toList())
         );
     }
 

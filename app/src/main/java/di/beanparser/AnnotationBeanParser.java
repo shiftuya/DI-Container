@@ -7,13 +7,17 @@ import di.container.annotations.Bean;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
+import di.container.dependency.GenericInjectableMethod;
+import di.container.dependency.InjectableMethod;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -86,18 +90,19 @@ public class AnnotationBeanParser implements BeanParser {
                     if (injectedConstructor.isVarArgs()) {
                         // todo VarArgs
                     } else {
-                        for (Parameter parameter : injectedConstructor.getParameters()) {
-                            Named namedAnnotation = parameter.getAnnotation(Named.class);
-                            constructorDependencies.add(
-                                namedAnnotation == null ?
-                                    new DependencyWithType(beanFactory, parameter.getType()) :
-                                    new DependencyWithId(beanFactory, namedAnnotation.value())
-                            );
-                        }
+                        constructorDependencies = getDependencies(injectedConstructor);
                     }
                 }
 
-                List<Dependency> setterDependencies = new ArrayList<>(); // todo setterDependencies
+                List<InjectableMethod> injectableMethods = new ArrayList<>();
+                for (Method method : clazz.getDeclaredMethods()) {
+                    Inject injectAnnotation = method.getAnnotation(Inject.class);
+                    if (injectAnnotation == null) {
+                        continue;
+                    }
+
+                    injectableMethods.add(new GenericInjectableMethod(method.getName(), getDependencies(method)));
+                }
 
                 List<Dependency> fieldDependencies = new ArrayList<>();
                 for (Field field : clazz.getDeclaredFields()) {
@@ -119,8 +124,8 @@ public class AnnotationBeanParser implements BeanParser {
                     clazz,
                     false, // todo delete?
                     constructorDependencies,
-                    setterDependencies,
-                    fieldDependencies
+                    fieldDependencies,
+                    injectableMethods
                 );
 
                 Named namedAnnotation = clazz.getAnnotation(Named.class);
@@ -191,5 +196,20 @@ public class AnnotationBeanParser implements BeanParser {
                 .map(Path::toString)
                 .collect(Collectors.toSet());
         }
+    }
+
+    private List<Dependency> getDependencies(Executable executable) {
+        List<Dependency> dependencies = new ArrayList<>();
+
+        for (Parameter parameter : executable.getParameters()) {
+            Named namedAnnotation = parameter.getAnnotation(Named.class);
+            dependencies.add(
+                namedAnnotation == null ?
+                    new DependencyWithType(beanFactory, parameter.getType()) :
+                    new DependencyWithId(beanFactory, namedAnnotation.value())
+            );
+        }
+
+        return dependencies;
     }
 }
