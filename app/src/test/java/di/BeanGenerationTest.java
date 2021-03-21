@@ -13,7 +13,7 @@ import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithValue;
 import di.container.DIContainer;
 import di.container.DIContainerException;
-import di.container.JsonDIContainer;
+import di.container.dependency.InjectableSetterMethod;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,8 @@ public class BeanGenerationTest {
         Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
         Dependency intArg = new DependencyWithValue("number", number, int.class);
         BeanDescription singleton = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
-            Lists.newArrayList(stringArg), Lists.newArrayList(intArg), new ArrayList<>());
+            Lists.newArrayList(stringArg), new ArrayList<>(),
+            Lists.newArrayList(new InjectableSetterMethod("number", intArg)));
 
         Map<String, BeanDescription> map = new HashMap<>();
         map.put("singleton", singleton);
@@ -92,7 +93,8 @@ public class BeanGenerationTest {
 
         Dependency complexSingletonConstructorProperty = new DependencyWithId(beanFactory, "singleton");
         BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON, ComplexClass.class,
-            false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>(), new ArrayList<>());
+            false, Lists.newArrayList(complexSingletonConstructorProperty), new ArrayList<>(),
+            new ArrayList<>());
 
         map.put("complexSingleton", complexSingleton);
 

@@ -5,13 +5,14 @@ import di.container.beaninstance.PrototypeInstance;
 import di.container.beaninstance.SingletonInstance;
 import di.container.beaninstance.ThreadInstance;
 import di.container.dependency.Dependency;
-import di.util.Utils;
+import di.container.dependency.InjectableMethod;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BeanDescription {
 
@@ -19,13 +20,13 @@ public class BeanDescription {
   private final Class<?> clazz;
   private final boolean isProxy;
   private final List<Dependency> constructorArgs;
-  private final List<Dependency> setterArgs;
+  private final List<InjectableMethod> injectableMethods;
   private List<Dependency> fieldDependencies;
   private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
-      List<Dependency> constructorArgs, List<Dependency> setterArgs,
-      List<Dependency> fieldDependencies) {
+      List<Dependency> constructorArgs, List<Dependency> fieldDependencies,
+      List<InjectableMethod> injectableMethods) {
     this.beanLifecycle = beanLifecycle;
 
     beanInstance = switch (beanLifecycle) {
@@ -37,7 +38,7 @@ public class BeanDescription {
     this.clazz = clazz;
     this.isProxy = isProxy;
     this.constructorArgs = constructorArgs;
-    this.setterArgs = setterArgs;
+    this.injectableMethods = injectableMethods;
     this.fieldDependencies = fieldDependencies;
   }
 
@@ -66,17 +67,24 @@ public class BeanDescription {
       throw new DIContainerException("Unable to instantiate bean");
     }
 
-    for (Dependency arg : setterArgs) {
-      String name = "set" + Utils.capitalize(arg.getFieldName());
+    for (InjectableMethod injectableMethod : injectableMethods) {
+      String name = injectableMethod.getMethodName();
       Method method;
+      List<Class<?>> classes = injectableMethod.getArguments().stream().map(Dependency::getClazz)
+          .collect(Collectors.toList());
       try {
-        method = getClazz().getMethod(name, arg.getClazz());
+        method = getClazz().getDeclaredMethod(name, classes.toArray(new Class<?>[0]));
       } catch (NoSuchMethodException e) {
         throw new DIContainerException("No setter");
       }
 
       try {
-        method.invoke(object, arg.getBean());
+        method.setAccessible(true);
+        List<Object> args = new ArrayList<>();
+        for (Dependency arg : constructorArgs) {
+          args.add(arg.getBean());
+        }
+        method.invoke(object, args.toArray());
       } catch (IllegalAccessException | InvocationTargetException e) {
         e.printStackTrace();
       }
