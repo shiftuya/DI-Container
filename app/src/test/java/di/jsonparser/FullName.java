@@ -1,11 +1,17 @@
 package di.jsonparser;
 
+import javax.inject.Inject;
+
 public class FullName {
 
     private String firstName;
     private String secondName;
 
-    public FullName() {}
+    @Inject
+    public FullName() {
+        firstName = "Ivan";
+        secondName = "Shatalov";
+    }
 
     public FullName(String firstName, String secondName) {
         this.firstName = firstName;

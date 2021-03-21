@@ -1,9 +1,14 @@
 package di.jsonparser;
 
+import di.container.annotations.Bean;
+
+import javax.inject.Inject;
 import javax.inject.Provider;
 
+@Bean()
 public class Person {
 
+    @Inject
     private FullName fullName;
     private ICar car;
     private String gender;
@@ -12,6 +17,7 @@ public class Person {
 
     public Person() {}
 
+    @Inject
     public Person(FullName fullName) {
         this.fullName = fullName;
     }
