@@ -75,7 +75,7 @@ public class AnnotationBeanParser implements BeanParser {
                 Constructor<?>[] constructors = clazz.getConstructors();
 
                 if (constructors.length == 0) {
-                    throw new DIContainerException("Bean has no public constructors");
+                    throw new DIContainerException(clazz.getName() + " has no public constructors");
                 }
 
                 if (constructors.length == 1) {
@@ -88,14 +88,14 @@ public class AnnotationBeanParser implements BeanParser {
                         }
 
                         if (injectedConstructor != null) {
-                            throw new DIContainerException("Bean has multiple injected constructors");
+                            throw new DIContainerException(clazz.getName() + " has multiple injected constructors");
                         }
 
                         injectedConstructor = constructor;
                     }
 
                     if (injectedConstructor == null) {
-                        throw new DIContainerException("Bean has multiple public constructors and none of them is injected");
+                        throw new DIContainerException(clazz.getName() + " has multiple public constructors and none of them is injected");
                     }
                 }
 

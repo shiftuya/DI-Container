@@ -9,7 +9,7 @@ public class AnnotationDIContainer extends GenericDIContainer {
     try {
       beanFactory = new AnnotationBeanParser(startupClasses).getBeanFactory();
     } catch (DIContainerException | URISyntaxException | IOException e) {
-      throw new DIContainerException("Can't create");
+      throw new DIContainerException(e.getMessage());
     }
   }
 }
