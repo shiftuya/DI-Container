@@ -28,7 +28,7 @@
                     "className": "di.jsonparser.ICar"
                 }
             ],
-            "fieldValues": [
+            "fields": [
                 {
                     "fieldName": "height",
                     "className": "java.lang.String",

@@ -8,7 +8,6 @@ import javax.inject.Provider;
 @Bean
 public class Person {
 
-    @Inject
     private FullName fullName;
     private ICar car;
     private String gender;
