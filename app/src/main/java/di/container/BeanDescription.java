@@ -81,7 +81,7 @@ public class BeanDescription {
       try {
         method.setAccessible(true);
         List<Object> args = new ArrayList<>();
-        for (Dependency arg : constructorArgs) {
+        for (Dependency arg : injectableMethod.getArguments()) {
           args.add(arg.getBean());
         }
         method.invoke(object, args.toArray());
