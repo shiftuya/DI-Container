@@ -72,7 +72,7 @@ public class JsonBeanParser implements BeanParser {
             bean.isProxy(),
             parseBeanProperties(bean.getConstructorArguments()),
             parseBeanProperties(bean.getSetterArguments()),
-            new ArrayList<>() // todo field args
+            parseBeanProperties(bean.getFields())
         );
     }
 

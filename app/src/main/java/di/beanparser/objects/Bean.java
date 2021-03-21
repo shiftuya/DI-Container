@@ -10,16 +10,18 @@ public class Bean {
     private boolean proxy = false;
     private Argument[] constructorArguments;
     private Argument[] setterArguments;
+    private Argument[] fields;
 
     @Override
     public String toString() {
-        return "BeanJson{" +
+        return "Bean{" +
             "id='" + id + '\'' +
             ", className='" + className + '\'' +
             ", lifecycle='" + lifecycle + '\'' +
             ", proxy=" + proxy +
             ", constructorArguments=" + Arrays.toString(constructorArguments) +
             ", setterArguments=" + Arrays.toString(setterArguments) +
+            ", fields=" + Arrays.toString(fields) +
             '}';
     }
 
@@ -45,5 +47,9 @@ public class Bean {
 
     public Argument[] getSetterArguments() {
         return setterArguments;
+    }
+
+    public Argument[] getFields() {
+        return fields;
     }
 }
