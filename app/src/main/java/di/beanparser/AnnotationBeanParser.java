@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +31,7 @@ public class AnnotationBeanParser implements BeanParser {
     private final Class<?>[] startupClasses;
     private final BeanFactory beanFactory = new BeanFactory();
 
-    public AnnotationBeanParser() throws ClassNotFoundException, IOException, URISyntaxException {
+    public AnnotationBeanParser() throws IOException, URISyntaxException {
         this("", new Class<?>[] {});
     }
 
