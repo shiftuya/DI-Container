@@ -78,33 +78,17 @@ public class AnnotationBeanParser implements BeanParser {
 
                 List<InjectableConstructor> injectableConstructors = new ArrayList<>();
                 Constructor<?>[] constructors = clazz.getConstructors();
-                for (Constructor<?> constructor : constructors) {
-                    Inject injectAnnotation = constructor.getAnnotation(Inject.class);
-                    if (injectAnnotation == null) {
-                        continue;
+                if (constructors.length == 1) {
+                    injectableConstructors.add(getInjectableConstructor(constructors[0]));
+                } else {
+                    for (Constructor<?> constructor : constructors) {
+                        Inject injectAnnotation = constructor.getAnnotation(Inject.class);
+                        if (injectAnnotation == null) {
+                            continue;
+                        }
+
+                        injectableConstructors.add(getInjectableConstructor(constructor));
                     }
-
-                    List<Dependency> constructorDependencies = new ArrayList<>();
-                    if (constructor.isVarArgs()) {
-                        // todo VarArgs
-                    } else {
-                        constructorDependencies = getDependencies(constructor);
-                    }
-
-                    injectableConstructors.add(new InjectableConstructorImpl(constructorDependencies));
-                }
-
-                if (injectableConstructors.size() == 0 && constructors.length == 1) {
-                    Constructor<?> constructor = constructors[0];
-
-                    List<Dependency> constructorDependencies = new ArrayList<>();
-                    if (constructor.isVarArgs()) {
-                        // todo VarArgs
-                    } else {
-                        constructorDependencies = getDependencies(constructor);
-                    }
-
-                    injectableConstructors.add(new InjectableConstructorImpl(constructorDependencies));
                 }
 
                 List<InjectableMethod> injectableMethods = new ArrayList<>();
@@ -227,6 +211,17 @@ public class AnnotationBeanParser implements BeanParser {
                 .map(Path::toString)
                 .collect(Collectors.toSet());
         }
+    }
+
+    private InjectableConstructor getInjectableConstructor(Constructor<?> constructor) {
+        List<Dependency> constructorDependencies = new ArrayList<>();
+        if (constructor.isVarArgs()) {
+            // todo VarArgs
+        } else {
+            constructorDependencies = getDependencies(constructor);
+        }
+
+        return new InjectableConstructorImpl(constructorDependencies);
     }
 
     private List<Dependency> getDependencies(Executable executable) {
