@@ -77,11 +77,25 @@ public class AnnotationBeanParser implements BeanParser {
                 }
 
                 List<InjectableConstructor> injectableConstructors = new ArrayList<>();
-                for (Constructor<?> constructor : clazz.getConstructors()) {
+                Constructor<?>[] constructors = clazz.getConstructors();
+                for (Constructor<?> constructor : constructors) {
                     Inject injectAnnotation = constructor.getAnnotation(Inject.class);
                     if (injectAnnotation == null) {
                         continue;
                     }
+
+                    List<Dependency> constructorDependencies = new ArrayList<>();
+                    if (constructor.isVarArgs()) {
+                        // todo VarArgs
+                    } else {
+                        constructorDependencies = getDependencies(constructor);
+                    }
+
+                    injectableConstructors.add(new InjectableConstructorImpl(constructorDependencies));
+                }
+
+                if (injectableConstructors.size() == 0 && constructors.length == 1) {
+                    Constructor<?> constructor = constructors[0];
 
                     List<Dependency> constructorDependencies = new ArrayList<>();
                     if (constructor.isVarArgs()) {
