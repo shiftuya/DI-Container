@@ -5,6 +5,7 @@ import di.container.beaninstance.PrototypeInstance;
 import di.container.beaninstance.SingletonInstance;
 import di.container.beaninstance.ThreadInstance;
 import di.container.dependency.Dependency;
+import di.container.dependency.InjectableConstructor;
 import di.container.dependency.InjectableMethod;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -19,13 +20,13 @@ public class BeanDescription {
   private final BeanLifecycle beanLifecycle;
   private final Class<?> clazz;
   private final boolean isProxy;
-  private final List<Dependency> constructorArgs;
+  private final List<InjectableConstructor> constructorArgs;
   private final List<InjectableMethod> injectableMethods;
   private List<Dependency> fieldDependencies;
   private BeanInstance beanInstance;
 
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
-      List<Dependency> constructorArgs, List<Dependency> fieldDependencies,
+      List<InjectableConstructor> constructorArgs, List<Dependency> fieldDependencies,
       List<InjectableMethod> injectableMethods) {
     this.beanLifecycle = beanLifecycle;
 
@@ -57,9 +58,13 @@ public class BeanDescription {
 
   private Object generateBean() throws DIContainerException {
     Object object;
+    if (constructorArgs.size() != 1) {
+      throw new DIContainerException("Illegal constructor count");
+    }
+
     try {
       List<Object> args = new ArrayList<>();
-      for (Dependency arg : constructorArgs) {
+      for (Dependency arg : constructorArgs.get(0).getArguments()) {
         args.add(arg.getBean());
       }
       object = getConstructor().newInstance(args.toArray());
@@ -111,7 +116,7 @@ public class BeanDescription {
     for (Constructor<?> constructor : clazz.getConstructors()) {
       if (constructor.isVarArgs()) {
         // ... TODO
-      } else if (isMatchingConstructor(constructor, constructorArgs)) {
+      } else if (isMatchingConstructor(constructor, constructorArgs.get(0).getArguments())) {
         constr = constructor;
         break;
       }
