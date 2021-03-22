@@ -8,6 +8,8 @@ import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 import di.container.dependency.GenericInjectableMethod;
+import di.container.dependency.InjectableConstructor;
+import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableMethod;
 import di.container.dependency.ProviderDependency;
 
@@ -74,39 +76,21 @@ public class AnnotationBeanParser implements BeanParser {
                     continue;
                 }
 
-                Constructor<?> injectedConstructor = null;
-                Constructor<?>[] constructors = clazz.getConstructors();
-
-                if (constructors.length == 0) {
-                    throw new DIContainerException(clazz.getName() + " has no public constructors");
-                }
-
-                if (constructors.length == 1) {
-                    injectedConstructor = constructors[0];
-                } else {
-                    for (Constructor<?> constructor : constructors) {
-                        Inject injectAnnotation = constructor.getAnnotation(Inject.class);
-                        if (injectAnnotation == null) {
-                            continue;
-                        }
-
-                        if (injectedConstructor != null) {
-                            throw new DIContainerException(clazz.getName() + " has multiple injected constructors");
-                        }
-
-                        injectedConstructor = constructor;
+                List<InjectableConstructor> injectableConstructors = new ArrayList<>();
+                for (Constructor<?> constructor : clazz.getConstructors()) {
+                    Inject injectAnnotation = constructor.getAnnotation(Inject.class);
+                    if (injectAnnotation == null) {
+                        continue;
                     }
 
-                    if (injectedConstructor == null) {
-                        throw new DIContainerException(clazz.getName() + " has multiple public constructors and none of them is injected");
+                    List<Dependency> constructorDependencies = new ArrayList<>();
+                    if (constructor.isVarArgs()) {
+                        // todo VarArgs
+                    } else {
+                        constructorDependencies = getDependencies(constructor);
                     }
-                }
 
-                List<Dependency> constructorDependencies = new ArrayList<>();
-                if (injectedConstructor.isVarArgs()) {
-                    // todo VarArgs
-                } else {
-                    constructorDependencies = getDependencies(injectedConstructor);
+                    injectableConstructors.add(new InjectableConstructorImpl(constructorDependencies));
                 }
 
                 List<InjectableMethod> injectableMethods = new ArrayList<>();
@@ -156,7 +140,7 @@ public class AnnotationBeanParser implements BeanParser {
                     beanAnnotation.lifecycle(),
                     clazz,
                     false, // todo delete?
-                    constructorDependencies,
+                    injectableConstructors,
                     fieldDependencies,
                     injectableMethods
                 );

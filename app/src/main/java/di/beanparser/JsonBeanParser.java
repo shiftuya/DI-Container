@@ -11,6 +11,7 @@ import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
 import di.container.dependency.DependencyWithValue;
+import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableSetterMethod;
 import di.container.dependency.InnerDependency;
 import di.container.dependency.ProviderDependency;
@@ -72,7 +73,9 @@ public class JsonBeanParser implements BeanParser {
             },
             getClazz(bean.getClassName()),
             bean.isProxy(),
-            parseBeanProperties(bean.getConstructorArguments()),
+            new ArrayList<>() {{
+                add(new InjectableConstructorImpl(parseBeanProperties(bean.getConstructorArguments())));
+            }},
             parseBeanProperties(bean.getFields()),
             parseBeanProperties(bean.getSetterArguments()).stream().map(InjectableSetterMethod::new).collect(Collectors.toList())
         );
