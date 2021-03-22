@@ -59,7 +59,7 @@ public class BeanDescription {
   private Object generateBean() throws DIContainerException {
     Object object;
     if (constructorArgs.size() != 1) {
-      throw new DIContainerException("Illegal constructor count");
+      throw new DIContainerException("Illegal injectable constructor count (" + constructorArgs.size() + ") for " + clazz);
     }
 
     try {
