@@ -41,11 +41,18 @@ public class JsonBeanParser implements BeanParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
 
-    public JsonBeanParser(String jsonFileName) throws ClassNotFoundException, IOException {
-        Beans beans = new Gson().fromJson(Utils.getResourceAsString(jsonFileName), Beans.class);
+    public JsonBeanParser(String jsonFileName) throws BeanParserException {
+        try {
+            parseBeans(new Gson().fromJson(Utils.getResourceAsString(jsonFileName), Beans.class));
+        } catch (ClassNotFoundException | IOException e) {
+            throw new BeanParserException(e);
+        }
+    }
 
+    private void parseBeans(Beans beans) throws ClassNotFoundException, BeanParserException {
         Map<String, BeanDescription> beanMap = new HashMap<>();
         Set<BeanDescription> beanSet = new HashSet<>();
+
         for (Bean bean : beans.getBeans()) {
             BeanDescription beanDescription = parseBeanDescription(bean);
             if (bean.getId() != null) {
@@ -64,12 +71,13 @@ public class JsonBeanParser implements BeanParser {
         return beanFactory;
     }
 
-    private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException {
+    private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException, BeanParserException {
         return new BeanDescription(
             switch (bean.getLifecycle()) {
-                default -> BeanLifecycle.SINGLETON; // todo throw
+                case "singleton" -> BeanLifecycle.SINGLETON;
                 case "thread" -> BeanLifecycle.THREAD;
                 case "prototype" -> BeanLifecycle.PROTOTYPE;
+                default -> throw new BeanParserException("Unknown bean lifecycle: " + bean.getLifecycle());
             },
             getClazz(bean.getClassName()),
             bean.isProxy(),
@@ -81,7 +89,7 @@ public class JsonBeanParser implements BeanParser {
         );
     }
 
-    private List<Dependency> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException {
+    private List<Dependency> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException, BeanParserException {
         List<Dependency> dependencies = new ArrayList<>();
 
         if (arguments != null) {
