@@ -28,17 +28,6 @@ import java.util.stream.Collectors;
 
 public class JsonBeanParser implements BeanParser {
 
-    private static final Map<String, Class<?>> PRIMITIVES = new HashMap<>() {{
-        put("boolean", boolean.class);
-        put("byte", byte.class);
-        put("char", char.class);
-        put("short", short.class);
-        put("int", int.class);
-        put("long", long.class);
-        put("float", float.class);
-        put("double", double.class);
-    }};
-
     private final BeanFactory beanFactory = new BeanFactory();
 
     public JsonBeanParser(String jsonFileName) throws BeanParserException {
