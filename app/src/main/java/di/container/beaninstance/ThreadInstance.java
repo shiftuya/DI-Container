@@ -1,9 +1,10 @@
 package di.container.beaninstance;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadInstance implements BeanInstance {
-  private Map<Thread, Object> threadObjectMap;
+  private final Map<Thread, Object> threadObjectMap = new ConcurrentHashMap<>();
 
   @Override
   public Object get() {

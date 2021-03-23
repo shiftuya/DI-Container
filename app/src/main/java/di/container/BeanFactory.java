@@ -31,7 +31,7 @@ public class BeanFactory {
         .filter(description -> clazz.isAssignableFrom(description.getClazz()))
         .collect(Collectors.toList());
     if (descriptions.isEmpty()) {
-      throw new DIContainerException("No beans found");
+      throw new DIContainerException("No beans found: " + clazz);
     }
     if (descriptions.size() > 1) {
       throw new DIContainerException("Too many beans found");

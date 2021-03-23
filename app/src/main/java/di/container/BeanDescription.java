@@ -59,7 +59,8 @@ public class BeanDescription {
   private Object generateBean() throws DIContainerException {
     Object object;
     if (constructorArgs.size() != 1) {
-      throw new DIContainerException("Illegal injectable constructor count (" + constructorArgs.size() + ") for " + clazz);
+      throw new DIContainerException(
+          "Illegal injectable constructor count (" + constructorArgs.size() + ") for " + clazz);
     }
 
     try {
@@ -123,7 +124,9 @@ public class BeanDescription {
     }
 
     if (constr == null) {
-      throw new DIContainerException("No matching constructor");
+      throw new DIContainerException(
+          "No matching constructor: " + clazz + "; accepting " + constructorArgs.get(0)
+              .getArguments().stream().map(Dependency::getClazz).collect(Collectors.toList()));
     }
     return constr;
   }
