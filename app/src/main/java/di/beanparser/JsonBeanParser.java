@@ -71,7 +71,7 @@ public class JsonBeanParser implements BeanParser {
         return beanFactory;
     }
 
-    private BeanDescription parseBeanDescription(Bean bean) throws ClassNotFoundException, BeanParserException {
+    private BeanDescription parseBeanDescription(Bean bean) throws BeanParserException {
         return new BeanDescription(
             switch (bean.getLifecycle()) {
                 case "singleton" -> BeanLifecycle.SINGLETON;
@@ -89,7 +89,7 @@ public class JsonBeanParser implements BeanParser {
         );
     }
 
-    private List<Dependency> parseBeanProperties(Argument[] arguments) throws ClassNotFoundException, BeanParserException {
+    private List<Dependency> parseBeanProperties(Argument[] arguments) throws BeanParserException {
         List<Dependency> dependencies = new ArrayList<>();
 
         if (arguments != null) {
@@ -104,11 +104,12 @@ public class JsonBeanParser implements BeanParser {
                     dependency = argument.getFieldName() != null ?
                         new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
                         new DependencyWithId(beanFactory, argument.getRef());
-                } else if (argument.getValue() != null) { // todo parse real type value
+                } else if (argument.getValue() != null) {
                     Class<?> clazz = getClazz(argument.getClassName());
+                    Object typedValue = parseValue(argument.getClassName(), argument.getValue());
 
                     dependency = argument.getFieldName() != null ?
-                        new DependencyWithValue(argument.getFieldName(), argument.getValue(), clazz) :
+                        new DependencyWithValue(argument.getFieldName(), typedValue, clazz) :
                         new DependencyWithValue(argument.getValue(), clazz);
                 } else {
                     Class<?> clazz = getClazz(argument.getClassName());
@@ -131,12 +132,39 @@ public class JsonBeanParser implements BeanParser {
         return dependencies;
     }
 
-    private Class<?> getClazz(String className) throws ClassNotFoundException {
-        Class<?> clazz = PRIMITIVES.get(className);
-        if (clazz == null) {
-            clazz = Class.forName(className);
+    private Class<?> getClazz(String className) throws BeanParserException {
+        try {
+            return switch (className) {
+                case "boolean" -> boolean.class;
+                case "byte" -> byte.class;
+                case "char" -> char.class;
+                case "short" -> short.class;
+                case "int" -> int.class;
+                case "long" -> long.class;
+                case "float" -> float.class;
+                case "double" -> double.class;
+                default -> Class.forName(className);
+            };
+        } catch (ClassNotFoundException e) {
+            throw new BeanParserException(e);
         }
+    }
 
-        return clazz;
+    private Object parseValue(String className, String value) throws BeanParserException {
+        try {
+            return switch (className) {
+                case "boolean" -> Boolean.parseBoolean(value);
+                case "byte" -> Byte.parseByte(value);
+                case "char" -> value.charAt(0);
+                case "short" -> Short.parseShort(value);
+                case "int" -> Integer.parseInt(value);
+                case "long" -> Long.parseLong(value);
+                case "float" -> Float.parseFloat(value);
+                case "double" -> Double.parseDouble(value);
+                default -> value;
+            };
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            throw new BeanParserException(e);
+        }
     }
 }
