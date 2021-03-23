@@ -101,7 +101,7 @@ public class AnnotationBeanParser implements BeanParser {
         beanFactory.setBeanDescriptionSet(beanSet);
     }
 
-    private List<InjectableConstructor> getInjectableConstructors(Class<?> clazz) {
+    private List<InjectableConstructor> getInjectableConstructors(Class<?> clazz) throws BeanParserException {
         List<InjectableConstructor> injectableConstructors = new ArrayList<>();
 
         Constructor<?>[] constructors = clazz.getConstructors();
@@ -159,7 +159,7 @@ public class AnnotationBeanParser implements BeanParser {
         return fieldDependencies;
     }
 
-    private List<InjectableMethod> getInjectableMethods(Class<?> clazz) {
+    private List<InjectableMethod> getInjectableMethods(Class<?> clazz) throws BeanParserException {
         List<InjectableMethod> injectableMethods = new ArrayList<>();
 
         for (Method method : clazz.getDeclaredMethods()) {
@@ -174,7 +174,7 @@ public class AnnotationBeanParser implements BeanParser {
         return injectableMethods;
     }
 
-    private InjectableConstructor getInjectableConstructor(Constructor<?> constructor) {
+    private InjectableConstructor getInjectableConstructor(Constructor<?> constructor) throws BeanParserException {
         List<Dependency> constructorDependencies = new ArrayList<>();
         if (constructor.isVarArgs()) {
             // todo VarArgs
@@ -185,16 +185,34 @@ public class AnnotationBeanParser implements BeanParser {
         return new InjectableConstructorImpl(constructorDependencies);
     }
 
-    private List<Dependency> getDependencies(Executable executable) {
+    private List<Dependency> getDependencies(Executable executable) throws BeanParserException {
         List<Dependency> dependencies = new ArrayList<>();
 
         for (Parameter parameter : executable.getParameters()) {
-            Named namedAnnotation = parameter.getAnnotation(Named.class);
-            dependencies.add(
-                namedAnnotation == null ?
+            Dependency dependency;
+            if (Provider.class.isAssignableFrom(parameter.getType())) {
+                try {
+                    ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
+                    Class<?> actualType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+
+                    Named namedAnnotation = parameter.getAnnotation(Named.class);
+                    dependency = new ProviderDependency(
+                        namedAnnotation == null ?
+                            new DependencyWithType(beanFactory, actualType) :
+                            new DependencyWithId(beanFactory, namedAnnotation.value()),
+                        parameter.getName()
+                    );
+                } catch (ClassCastException e) {
+                    throw new BeanParserException(executable.getName() + " has raw injected Provider parameter: " + parameter.getName());
+                }
+            } else {
+                Named namedAnnotation = parameter.getAnnotation(Named.class);
+                dependency = namedAnnotation == null ?
                     new DependencyWithType(beanFactory, parameter.getType()) :
-                    new DependencyWithId(beanFactory, namedAnnotation.value())
-            );
+                    new DependencyWithId(beanFactory, namedAnnotation.value());
+            }
+
+            dependencies.add(dependency);
         }
 
         return dependencies;
