@@ -11,7 +11,7 @@ public class Person {
     private FullName fullName;
     private ICar car;
     private String gender;
-    private String age;
+    private int age;
     private Provider<IPassport> passport;
     private String height;
 
@@ -40,7 +40,7 @@ public class Person {
         this.gender = gender;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
@@ -60,7 +60,7 @@ public class Person {
         return gender;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 }

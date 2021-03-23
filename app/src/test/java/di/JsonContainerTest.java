@@ -26,14 +26,14 @@ public class JsonContainerTest {
 
     Person john = (Person)container.getBean("personJohn");
 
-    assertEquals("30", john.getAge());
+    assertEquals(30, john.getAge());
     assertEquals("John", john.getFullName().getFirstName());
     assertEquals("Doe", john.getFullName().getSecondName());
     assertEquals("M", john.getGender());
 
     Person jane = container.getBean("personJane", Person.class);
 
-    assertNull(jane.getAge());
+    assertEquals(0, jane.getAge());
     assertEquals("Jane", jane.getFullName().getFirstName());
     assertEquals("Doe", jane.getFullName().getSecondName());
     assertNull(jane.getGender());
