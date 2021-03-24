@@ -85,7 +85,6 @@ public class AnnotationBeanParser implements BeanParser {
             BeanDescription beanDescription = new BeanDescription(
                 beanAnnotation.lifecycle(),
                 clazz,
-                false, // todo delete?
                 getInjectableConstructors(clazz),
                 getFieldDependencies(clazz),
                 getInjectableMethods(clazz)

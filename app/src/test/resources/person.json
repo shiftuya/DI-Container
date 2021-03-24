@@ -39,7 +39,6 @@
             "id": "fullNameJohn",
             "className": "di.jsonparser.FullName",
             "lifecycle": "prototype",
-            "proxy": true,
             "constructorArguments": [
                 {
                     "className": "java.lang.String",
