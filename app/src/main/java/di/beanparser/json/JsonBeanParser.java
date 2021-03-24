@@ -1,9 +1,11 @@
-package di.beanparser;
+package di.beanparser.json;
 
 import com.google.gson.Gson;
-import di.beanparser.objects.Argument;
-import di.beanparser.objects.Bean;
-import di.beanparser.objects.Beans;
+import di.beanparser.BeanParser;
+import di.beanparser.BeanParserException;
+import di.beanparser.json.objects.Argument;
+import di.beanparser.json.objects.Bean;
+import di.beanparser.json.objects.Beans;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;

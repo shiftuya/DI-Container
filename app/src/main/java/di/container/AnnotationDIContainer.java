@@ -1,6 +1,6 @@
 package di.container;
 
-import di.beanparser.AnnotationBeanParser;
+import di.beanparser.annotation.AnnotationBeanParser;
 import di.beanparser.BeanParserException;
 
 public class AnnotationDIContainer extends GenericDIContainer {

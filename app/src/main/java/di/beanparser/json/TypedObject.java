@@ -1,4 +1,4 @@
-package di.beanparser;
+package di.beanparser.json;
 
 public class TypedObject {
 

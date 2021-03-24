@@ -1,7 +1,7 @@
 package di.container;
 
 import di.beanparser.BeanParserException;
-import di.beanparser.JsonBeanParser;
+import di.beanparser.json.JsonBeanParser;
 
 public class JsonDIContainer extends GenericDIContainer {
   public JsonDIContainer(String filename) throws DIContainerException {

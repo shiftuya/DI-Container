@@ -1,5 +1,7 @@
-package di.beanparser;
+package di.beanparser.annotation;
 
+import di.beanparser.BeanParser;
+import di.beanparser.BeanParserException;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.annotations.Bean;

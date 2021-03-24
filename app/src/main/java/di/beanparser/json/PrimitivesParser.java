@@ -1,4 +1,6 @@
-package di.beanparser;
+package di.beanparser.json;
+
+import di.beanparser.BeanParserException;
 
 public class PrimitivesParser {
 
@@ -14,7 +16,7 @@ public class PrimitivesParser {
         this.className = className;
     }
 
-    public TypedObject getTypedObject() throws BeanParserException { // todo change exception?
+    public TypedObject getTypedObject() throws BeanParserException {
         return className != null ? parseValue(className, value) : parseValue(value);
     }
 
