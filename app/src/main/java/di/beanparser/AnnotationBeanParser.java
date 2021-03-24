@@ -15,7 +15,7 @@ import di.sourcesscanner.DirectorySourcesScanner;
 import di.sourcesscanner.JarSourcesScanner;
 import di.sourcesscanner.SourcesScanner;
 import di.sourcesscanner.SourcesScannerException;
-import di.sourcesscanner.Util;
+import di.sourcesscanner.Utils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,7 +52,7 @@ public class AnnotationBeanParser implements BeanParser {
 
     public AnnotationBeanParser(String directory, Class<?>... startupClasses) throws BeanParserException {
         try {
-            File codeSourceFile = Util.getCodeSourceFile(getClass());
+            File codeSourceFile = Utils.getCodeSourceFile(getClass());
 
             SourcesScanner sourcesScanner =
                 !codeSourceFile.isDirectory() && codeSourceFile.toString().endsWith(".jar") ?

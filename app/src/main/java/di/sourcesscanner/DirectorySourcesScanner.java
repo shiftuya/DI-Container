@@ -30,7 +30,7 @@ public class DirectorySourcesScanner extends AbstractSourcesScanner {
         Set<String> set = new HashSet<>();
 
         for (Class<?> clazz : startupClasses) {
-            set.addAll(getClassFileNames(directory, Util.getCodeSourceFile(clazz)));
+            set.addAll(getClassFileNames(directory, Utils.getCodeSourceFile(clazz)));
         }
 
         return set;
