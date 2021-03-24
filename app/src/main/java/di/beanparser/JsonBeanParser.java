@@ -94,14 +94,17 @@ public class JsonBeanParser implements BeanParser {
                         new DependencyWithId(beanFactory, argument.getRef(), argument.getFieldName()) :
                         new DependencyWithId(beanFactory, argument.getRef());
                 } else if (argument.getValue() != null) {
-                    Class<?> clazz = getClazz(argument.getClassName());
-                    Object typedValue = parseValue(argument.getClassName(), argument.getValue());
+                    PrimitivesParser primitivesParser = argument.getClassName() != null ?
+                        new PrimitivesParser(argument.getValue(), argument.getClassName()) :
+                        new PrimitivesParser(argument.getValue());
+
+                    TypedObject typedObject = primitivesParser.getTypedObject();
 
                     dependency = argument.getFieldName() != null ?
-                        new DependencyWithValue(argument.getFieldName(), typedValue, clazz) :
-                        new DependencyWithValue(argument.getValue(), clazz);
+                        new DependencyWithValue(argument.getFieldName(), typedObject.getValue(), typedObject.getType()) :
+                        new DependencyWithValue(typedObject.getValue(), typedObject.getType());
                 } else {
-                    Class<?> clazz = getClazz(argument.getClassName());
+                    Class<?> clazz = getClazz(argument.getClassName()); // todo create DependencyWithValue for primitives with default value?
 
                     dependency = argument.getFieldName() != null ?
                         new DependencyWithType(beanFactory, argument.getFieldName(), clazz) :
@@ -135,24 +138,6 @@ public class JsonBeanParser implements BeanParser {
                 default -> Class.forName(className);
             };
         } catch (ClassNotFoundException e) {
-            throw new BeanParserException(e);
-        }
-    }
-
-    private Object parseValue(String className, String value) throws BeanParserException {
-        try {
-            return switch (className) {
-                case "boolean" -> Boolean.parseBoolean(value);
-                case "byte" -> Byte.parseByte(value);
-                case "char" -> value.charAt(0);
-                case "short" -> Short.parseShort(value);
-                case "int" -> Integer.parseInt(value);
-                case "long" -> Long.parseLong(value);
-                case "float" -> Float.parseFloat(value);
-                case "double" -> Double.parseDouble(value);
-                default -> value;
-            };
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             throw new BeanParserException(e);
         }
     }
