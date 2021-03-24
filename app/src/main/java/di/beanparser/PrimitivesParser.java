@@ -14,7 +14,7 @@ public class PrimitivesParser {
         this.className = className;
     }
 
-    public TypedObject getTypedObject() throws BeanParserException {
+    public TypedObject getTypedObject() throws BeanParserException { // todo change exception?
         return className != null ? parseValue(className, value) : parseValue(value);
     }
 
@@ -37,54 +37,38 @@ public class PrimitivesParser {
     }
 
     private TypedObject parseValue(String value) {
-        TypedObject typedObject = null;
+        try {
+            return new TypedObject(byte.class, Byte.parseByte(value));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            return new TypedObject(short.class, Short.parseShort(value));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            return new TypedObject(int.class, Integer.parseInt(value));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            return new TypedObject(long.class, Long.parseLong(value));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            return new TypedObject(float.class, Float.parseFloat(value));
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            return new TypedObject(double.class, Double.parseDouble(value));
+        } catch (NumberFormatException ignored) {}
 
         if (value.equalsIgnoreCase("true")) {
-            typedObject = new TypedObject(boolean.class, true);
-        } else if (value.equalsIgnoreCase("false")) {
-            typedObject = new TypedObject(boolean.class, false);
+            return new TypedObject(boolean.class, true);
         }
 
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(byte.class, Byte.parseByte(value));
-            } catch (NumberFormatException ignored) {}
+        if (value.equalsIgnoreCase("false")) {
+            return new TypedObject(boolean.class, false);
         }
 
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(short.class, Short.parseShort(value));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(int.class, Integer.parseInt(value));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(long.class, Long.parseLong(value));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(float.class, Float.parseFloat(value));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (typedObject == null) {
-            try {
-                typedObject = new TypedObject(double.class, Double.parseDouble(value));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        if (typedObject == null) {
-            typedObject = new TypedObject(String.class, value);
-        }
-
-        return typedObject;
+        return new TypedObject(String.class, value);
     }
 }
