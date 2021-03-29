@@ -1,6 +1,6 @@
 package di.container.annotations;
 
-import di.container.BeanLifecycle;
+import di.container.beandescription.BeanLifecycle;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,5 +12,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Bean {
-    BeanLifecycle lifecycle() default BeanLifecycle.SINGLETON;
+
+  BeanLifecycle lifecycle() default BeanLifecycle.SINGLETON;
 }

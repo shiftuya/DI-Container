@@ -1,14 +1,13 @@
 package di.container.dependency;
 
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import di.container.DIContainerException;
-import di.container.MyProvider;
 import java.util.List;
 import javax.inject.Provider;
 
 public class ProviderDependency implements Dependency {
 
-  private Dependency wrappedDependency;
+  private final Dependency wrappedDependency;
 
   private String fieldName;
 
@@ -49,7 +48,7 @@ public class ProviderDependency implements Dependency {
 
   @Override
   public Object getBean() throws DIContainerException {
-    return new MyProvider<>(wrappedDependency);
+    return new ProviderImpl<>(wrappedDependency);
   }
 
   @Override

@@ -1,13 +1,13 @@
-package di.container;
+package di.container.dependency;
 
-import di.container.dependency.Dependency;
+import di.container.DIContainerException;
 import javax.inject.Provider;
 
-public class MyProvider<T> implements Provider<T> {
+public class ProviderImpl<T> implements Provider<T> {
 
   private final Dependency dependency;
 
-  public MyProvider(Dependency dependency) {
+  public ProviderImpl(Dependency dependency) {
     this.dependency = dependency;
   }
 

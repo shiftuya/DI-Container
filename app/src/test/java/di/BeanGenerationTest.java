@@ -4,9 +4,9 @@
 package di;
 
 import com.google.common.collect.Lists;
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import di.container.BeanFactory;
-import di.container.BeanLifecycle;
+import di.container.beandescription.BeanLifecycle;
 import di.container.GenericDIContainer;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;

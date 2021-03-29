@@ -5,6 +5,7 @@ import di.beanparser.annotation.AnnotationBeanParser;
 import di.beanparser.json.JsonBeanParser;
 
 public class AnnotationJsonDIContainer extends GenericDIContainer {
+
   public AnnotationJsonDIContainer(String json, Class<?>... startupClasses)
       throws DIContainerException {
     try {

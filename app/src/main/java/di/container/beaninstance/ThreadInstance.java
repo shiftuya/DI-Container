@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadInstance implements BeanInstance {
+
   private final Map<Thread, Object> threadObjectMap = new ConcurrentHashMap<>();
 
   @Override

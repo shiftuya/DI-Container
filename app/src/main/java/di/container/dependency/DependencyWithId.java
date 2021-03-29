@@ -1,6 +1,6 @@
 package di.container.dependency;
 
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import di.container.BeanFactory;
 import di.container.DIContainerException;
 import java.util.List;

@@ -1,6 +1,6 @@
-package di.container;
+package di.container.beandescription;
 
-import di.container.annotations.Bean;
+import di.container.DIContainerException;
 import di.container.beaninstance.BeanInstance;
 import di.container.beaninstance.PrototypeInstance;
 import di.container.beaninstance.SingletonInstance;
@@ -22,8 +22,8 @@ public class BeanDescription {
   private final Class<?> clazz;
   private final List<InjectableConstructor> constructorArgs;
   private final List<InjectableMethod> injectableMethods;
-  private List<Dependency> fieldDependencies;
-  private BeanInstance beanInstance;
+  private final List<Dependency> fieldDependencies;
+  private final BeanInstance beanInstance;
 
   public BeanLifecycle getBeanLifecycle() {
     return beanLifecycle;
@@ -115,23 +115,21 @@ public class BeanDescription {
   }
 
   private Constructor<?> getConstructor() throws DIContainerException {
-    Constructor<?> constr = null;
+    Constructor<?> constructor = null;
 
-    for (Constructor<?> constructor : clazz.getConstructors()) {
-      if (constructor.isVarArgs()) {
-        // ... TODO
-      } else if (isMatchingConstructor(constructor, constructorArgs.get(0).getArguments())) {
-        constr = constructor;
+    for (Constructor<?> currentConstructor : clazz.getConstructors()) {
+      if (isMatchingConstructor(currentConstructor, constructorArgs.get(0).getArguments())) {
+        constructor = currentConstructor;
         break;
       }
     }
 
-    if (constr == null) {
+    if (constructor == null) {
       throw new DIContainerException(
           "No matching constructor: " + clazz + "; accepting " + constructorArgs.get(0)
               .getArguments().stream().map(Dependency::getClazz).collect(Collectors.toList()));
     }
-    return constr;
+    return constructor;
   }
 
   private boolean isMatchingConstructor(Constructor<?> constructor, List<Dependency> args) {

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class GenericDIContainer implements DIContainer {
+
   protected BeanFactory beanFactory;
 
   public GenericDIContainer() {
@@ -20,7 +21,7 @@ public class GenericDIContainer implements DIContainer {
   public <T> T getBean(String id, Class<T> clazz) throws DIContainerException {
     Object bean = getBean(id);
     if (clazz.isInstance(bean)) {
-      return (T)bean;
+      return (T) bean;
     }
     throw new DIContainerException(id + " is not " + clazz.getName());
   }
@@ -37,6 +38,6 @@ public class GenericDIContainer implements DIContainer {
 
   @Override
   public <T> T getBean(Class<T> clazz) throws DIContainerException {
-    return (T)beanFactory.getBean(clazz);
+    return (T) beanFactory.getBean(clazz);
   }
 }

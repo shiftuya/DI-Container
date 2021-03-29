@@ -10,6 +10,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Profile {
-    String include() default "";
-    String exclude() default "";
+
+  String include() default "";
+
+  String exclude() default "";
 }

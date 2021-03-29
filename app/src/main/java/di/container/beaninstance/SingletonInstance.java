@@ -1,6 +1,7 @@
 package di.container.beaninstance;
 
 public class SingletonInstance implements BeanInstance {
+
   private Object instance;
 
   @Override

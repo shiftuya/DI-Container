@@ -1,6 +1,6 @@
 package di.container.dependency;
 
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import java.util.List;
 
 public class DependencyWithValue implements Dependency {

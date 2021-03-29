@@ -2,6 +2,8 @@ package di.container;
 
 import com.google.common.collect.Sets;
 
+import di.container.beandescription.BeanDescription;
+import di.container.beandescription.BeanLifecycle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

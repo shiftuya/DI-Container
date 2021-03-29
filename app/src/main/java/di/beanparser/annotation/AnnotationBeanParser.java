@@ -4,7 +4,7 @@ import di.beanparser.BeanParser;
 import di.beanparser.BeanParserException;
 import di.beanparser.json.PrimitivesParser;
 import di.beanparser.json.TypedObject;
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import di.container.BeanFactory;
 import di.container.annotations.Bean;
 import di.container.annotations.Profile;

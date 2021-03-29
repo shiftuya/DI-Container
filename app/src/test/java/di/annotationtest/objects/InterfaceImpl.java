@@ -1,6 +1,6 @@
 package di.annotationtest.objects;
 
-import di.container.BeanLifecycle;
+import di.container.beandescription.BeanLifecycle;
 import di.container.annotations.Bean;
 import javax.inject.Named;
 

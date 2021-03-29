@@ -4,6 +4,7 @@ import di.util.Utils;
 import java.util.List;
 
 public class InjectableSetterMethod implements InjectableMethod {
+
   private String methodName;
   private Dependency dependency;
 

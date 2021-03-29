@@ -1,6 +1,6 @@
 package di.container.dependency;
 
-import di.container.BeanDescription;
+import di.container.beandescription.BeanDescription;
 import di.container.BeanFactory;
 import di.container.DIContainerException;
 import java.util.List;
@@ -9,7 +9,7 @@ public class DependencyWithType implements Dependency {
 
   private final BeanFactory beanFactory;
   private String fieldName;
-  private Class<?> clazz;
+  private final Class<?> clazz;
 
   public DependencyWithType(BeanFactory beanFactory, String fieldName, Class<?> clazz) {
     this.beanFactory = beanFactory;
@@ -38,7 +38,8 @@ public class DependencyWithType implements Dependency {
   }
 
   @Override
-  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans) throws DIContainerException {
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans)
+      throws DIContainerException {
     return beanFactory.getBeanDescriptionByClass(clazz).getCycle(traversedBeans);
   }
 }
