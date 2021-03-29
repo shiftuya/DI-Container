@@ -2,13 +2,17 @@ package di.beanparser.annotation;
 
 import di.beanparser.BeanParser;
 import di.beanparser.BeanParserException;
+import di.beanparser.json.PrimitivesParser;
+import di.beanparser.json.TypedObject;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.annotations.Bean;
 import di.container.annotations.Profile;
+import di.container.annotations.Value;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
+import di.container.dependency.DependencyWithValue;
 import di.container.dependency.GenericInjectableMethod;
 import di.container.dependency.InjectableConstructor;
 import di.container.dependency.InjectableConstructorImpl;
@@ -149,20 +153,36 @@ public class AnnotationBeanParser implements BeanParser {
                     Class<?> actualType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
 
                     Named namedAnnotation = field.getAnnotation(Named.class);
-                    dependency = new ProviderDependency(
-                        namedAnnotation == null ?
-                            new DependencyWithType(beanFactory, actualType) :
-                            new DependencyWithId(beanFactory, namedAnnotation.value()),
-                        field.getName()
-                    );
+                    Value valueAnnotation = field.getAnnotation(Value.class);
+
+                    if (valueAnnotation == null) {
+                        dependency = new ProviderDependency(
+                            namedAnnotation == null ?
+                                new DependencyWithType(beanFactory, actualType) :
+                                new DependencyWithId(beanFactory, namedAnnotation.value()),
+                            field.getName()
+                        );
+                    } else {
+                        PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), actualType.getName());
+                        TypedObject typedObject = primitivesParser.getTypedObject();
+                        dependency = new ProviderDependency(new DependencyWithValue(typedObject.getValue(), typedObject.getType()));
+                    }
                 } catch (ClassCastException e) {
                     throw new BeanParserException(clazz.getName() + " has raw injected Provider field: " + field.getName());
                 }
             } else {
                 Named namedAnnotation = field.getAnnotation(Named.class);
-                dependency = namedAnnotation == null ?
-                    new DependencyWithType(beanFactory, field.getType()) :
-                    new DependencyWithId(beanFactory, namedAnnotation.value());
+                Value valueAnnotation = field.getAnnotation(Value.class);
+
+                if (valueAnnotation == null) {
+                    dependency = namedAnnotation == null ?
+                        new DependencyWithType(beanFactory, field.getType()) :
+                        new DependencyWithId(beanFactory, namedAnnotation.value());
+                } else {
+                    PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), field.getType().getName());
+                    TypedObject typedObject = primitivesParser.getTypedObject();
+                    dependency = new DependencyWithValue(typedObject.getValue(), typedObject.getType());
+                }
             }
 
             fieldDependencies.add(dependency);
@@ -205,20 +225,36 @@ public class AnnotationBeanParser implements BeanParser {
                     Class<?> actualType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
 
                     Named namedAnnotation = parameter.getAnnotation(Named.class);
-                    dependency = new ProviderDependency(
-                        namedAnnotation == null ?
-                            new DependencyWithType(beanFactory, actualType) :
-                            new DependencyWithId(beanFactory, namedAnnotation.value()),
-                        parameter.getName()
-                    );
+                    Value valueAnnotation = parameter.getAnnotation(Value.class);
+
+                    if (valueAnnotation == null) {
+                        dependency = new ProviderDependency(
+                            namedAnnotation == null ?
+                                new DependencyWithType(beanFactory, actualType) :
+                                new DependencyWithId(beanFactory, namedAnnotation.value()),
+                            parameter.getName()
+                        );
+                    } else {
+                        PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), actualType.getName());
+                        TypedObject typedObject = primitivesParser.getTypedObject();
+                        dependency = new ProviderDependency(new DependencyWithValue(typedObject.getValue(), typedObject.getType()));
+                    }
                 } catch (ClassCastException e) {
                     throw new BeanParserException(executable.getName() + " has raw injected Provider parameter: " + parameter.getName());
                 }
             } else {
                 Named namedAnnotation = parameter.getAnnotation(Named.class);
-                dependency = namedAnnotation == null ?
-                    new DependencyWithType(beanFactory, parameter.getType()) :
-                    new DependencyWithId(beanFactory, namedAnnotation.value());
+                Value valueAnnotation = parameter.getAnnotation(Value.class);
+
+                if (valueAnnotation == null) {
+                    dependency = namedAnnotation == null ?
+                        new DependencyWithType(beanFactory, parameter.getType()) :
+                        new DependencyWithId(beanFactory, namedAnnotation.value());
+                } else {
+                    PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), parameter.getType().getName());
+                    TypedObject typedObject = primitivesParser.getTypedObject();
+                    dependency = new DependencyWithValue(typedObject.getValue(), typedObject.getType());
+                }
             }
 
             dependencies.add(dependency);
