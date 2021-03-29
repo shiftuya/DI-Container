@@ -69,4 +69,10 @@ public class BeanFactory {
       }
     }
   }
+
+  public BeanFactory merge(BeanFactory other) {
+    beanDescriptions.putAll(other.beanDescriptions);
+    beanDescriptionSet.addAll(other.beanDescriptionSet);
+    return this;
+  }
 }
