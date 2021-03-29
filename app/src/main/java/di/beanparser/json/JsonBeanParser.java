@@ -18,8 +18,8 @@ import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableSetterMethod;
 import di.container.dependency.InnerDependency;
 import di.container.dependency.ProviderDependency;
-import di.container.profile.ProfileChecker;
-import di.container.profile.SimpleProfileChecker;
+import di.beanparser.profile.ProfileChecker;
+import di.beanparser.profile.SimpleProfileChecker;
 import di.util.Utils;
 
 import java.io.IOException;

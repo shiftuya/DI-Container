@@ -1,4 +1,4 @@
-package di.container.profile;
+package di.beanparser.profile;
 
 import di.container.ContainerConstants;
 import di.util.Utils;
