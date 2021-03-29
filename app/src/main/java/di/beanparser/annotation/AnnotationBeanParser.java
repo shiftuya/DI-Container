@@ -231,8 +231,7 @@ public class AnnotationBeanParser implements BeanParser {
                         dependency = new ProviderDependency(
                             namedAnnotation == null ?
                                 new DependencyWithType(beanFactory, actualType) :
-                                new DependencyWithId(beanFactory, namedAnnotation.value()),
-                            parameter.getName()
+                                new DependencyWithId(beanFactory, namedAnnotation.value())
                         );
                     } else {
                         PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), actualType.getName());
