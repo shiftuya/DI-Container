@@ -19,6 +19,7 @@ import di.container.dependency.InjectableSetterMethod;
 import di.container.dependency.InnerDependency;
 import di.container.dependency.ProviderDependency;
 import di.container.profile.ProfileChecker;
+import di.container.profile.SimpleProfileChecker;
 import di.util.Utils;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 public class JsonBeanParser implements BeanParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
-    private final ProfileChecker profileChecker = (includeProfiles, excludeProfiles) -> false; // todo replace
+    private final ProfileChecker profileChecker = new SimpleProfileChecker();
 
     public JsonBeanParser(String jsonFileName) throws BeanParserException {
         try {

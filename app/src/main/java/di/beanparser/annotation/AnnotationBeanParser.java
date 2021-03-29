@@ -15,6 +15,7 @@ import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableMethod;
 import di.container.dependency.ProviderDependency;
 import di.container.profile.ProfileChecker;
+import di.container.profile.SimpleProfileChecker;
 import di.sourcesscanner.DirectorySourcesScanner;
 import di.sourcesscanner.JarSourcesScanner;
 import di.sourcesscanner.SourcesScanner;
@@ -41,7 +42,7 @@ import java.util.Set;
 public class AnnotationBeanParser implements BeanParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
-    private final ProfileChecker profileChecker = (includeProfiles, excludeProfiles) -> false; // todo replace
+    private final ProfileChecker profileChecker = new SimpleProfileChecker();
 
     public AnnotationBeanParser() throws BeanParserException {
         this("", new Class<?>[] {});
