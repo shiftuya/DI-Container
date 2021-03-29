@@ -2,6 +2,7 @@ package di.container.dependency;
 
 import di.container.BeanDescription;
 import di.container.DIContainerException;
+import java.util.List;
 
 public class InnerDependency implements Dependency {
 
@@ -30,5 +31,11 @@ public class InnerDependency implements Dependency {
   @Override
   public Class<?> getClazz() {
     return beanDescription.getClazz();
+  }
+
+  @Override
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans)
+      throws DIContainerException {
+    return beanDescription.getCycle(traversedBeans);
   }
 }

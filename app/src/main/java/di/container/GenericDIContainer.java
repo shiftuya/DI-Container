@@ -10,8 +10,10 @@ public class GenericDIContainer implements DIContainer {
     beanFactory = new BeanFactory();
   }
 
-  public GenericDIContainer(BeanFactory beanFactory) {
+  public GenericDIContainer(BeanFactory beanFactory) throws DIContainerException {
     this.beanFactory = beanFactory;
+    beanFactory.initSingletons();
+    beanFactory.checkForCircularDependency();
   }
 
   @Override

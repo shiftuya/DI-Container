@@ -1,7 +1,9 @@
 package di.container.dependency;
 
+import di.container.BeanDescription;
 import di.container.DIContainerException;
 import di.container.MyProvider;
+import java.util.List;
 import javax.inject.Provider;
 
 public class ProviderDependency implements Dependency {
@@ -53,5 +55,11 @@ public class ProviderDependency implements Dependency {
   @Override
   public Class<?> getClazz() {
     return Provider.class;
+  }
+
+  @Override
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans)
+      throws DIContainerException {
+    return wrappedDependency.getCycle(traversedBeans);
   }
 }

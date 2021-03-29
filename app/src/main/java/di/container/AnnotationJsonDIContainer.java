@@ -11,6 +11,7 @@ public class AnnotationJsonDIContainer extends GenericDIContainer {
       beanFactory = new AnnotationBeanParser(startupClasses).getBeanFactory()
           .merge(new JsonBeanParser(json).getBeanFactory());
       beanFactory.initSingletons();
+      beanFactory.checkForCircularDependency();
     } catch (BeanParserException e) {
       throw new DIContainerException(e.getMessage());
     }

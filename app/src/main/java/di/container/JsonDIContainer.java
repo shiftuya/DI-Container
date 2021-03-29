@@ -8,6 +8,7 @@ public class JsonDIContainer extends GenericDIContainer {
     try {
       beanFactory = new JsonBeanParser(filename).getBeanFactory();
       beanFactory.initSingletons();
+      beanFactory.checkForCircularDependency();
     } catch (BeanParserException e) {
       throw new DIContainerException("Unable to parse file: " + filename + " " + e);
     }

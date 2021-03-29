@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class BeanGenerationTest {
 
   @Test
-  public void basicPrototypeTest() {
+  public void basicPrototypeTest() throws DIContainerException {
     String value = "TestString";
 
     Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
@@ -54,7 +54,7 @@ public class BeanGenerationTest {
   }
 
   @Test
-  public void basicSingletonTest() {
+  public void basicSingletonTest() throws DIContainerException {
     String value = "TestString";
     int number = 5150;
 
@@ -84,7 +84,7 @@ public class BeanGenerationTest {
   }
 
   @Test
-  public void complexSingletonTest() {
+  public void complexSingletonTest() throws DIContainerException {
     String value = "TestString";
 
     Dependency stringArg = new DependencyWithValue("attribute", value, String.class);

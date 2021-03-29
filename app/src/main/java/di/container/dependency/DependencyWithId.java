@@ -1,7 +1,9 @@
 package di.container.dependency;
 
+import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.DIContainerException;
+import java.util.List;
 
 public class DependencyWithId implements Dependency {
 
@@ -33,5 +35,11 @@ public class DependencyWithId implements Dependency {
   @Override
   public Class<?> getClazz() {
     return beanFactory.getBeanDescription(id).getClazz();
+  }
+
+  @Override
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans)
+      throws DIContainerException {
+    return beanFactory.getBeanDescription(id).getCycle(traversedBeans);
   }
 }

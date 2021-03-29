@@ -1,5 +1,6 @@
 package di.container;
 
+import di.container.annotations.Bean;
 import di.container.beaninstance.BeanInstance;
 import di.container.beaninstance.PrototypeInstance;
 import di.container.beaninstance.SingletonInstance;
@@ -143,5 +144,30 @@ public class BeanDescription {
       }
     }
     return true;
+  }
+
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedBeans)
+      throws DIContainerException {
+    if (traversedBeans.contains(this)) {
+      traversedBeans.add(this);
+      return traversedBeans;
+    }
+    traversedBeans.add(this);
+    List<Dependency> dependencies = new ArrayList<>();
+    dependencies.addAll(constructorArgs.stream().map(InjectableConstructor::getArguments)
+        .collect(Collectors.toList()).stream().flatMap(List::stream).collect(Collectors.toList()));
+    dependencies.addAll(
+        injectableMethods.stream().map(InjectableMethod::getArguments).collect(Collectors.toList())
+            .stream().flatMap(List::stream).collect(Collectors.toList()));
+    dependencies.addAll(fieldDependencies);
+
+    for (Dependency dependency : dependencies) {
+      List<BeanDescription> cycle = dependency.getCycle(traversedBeans);
+      if (cycle != null) {
+        return cycle;
+      }
+    }
+    traversedBeans.remove(traversedBeans.size() - 1);
+    return null;
   }
 }

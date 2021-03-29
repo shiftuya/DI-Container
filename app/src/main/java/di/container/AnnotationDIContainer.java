@@ -8,6 +8,7 @@ public class AnnotationDIContainer extends GenericDIContainer {
     try {
       beanFactory = new AnnotationBeanParser(startupClasses).getBeanFactory();
       beanFactory.initSingletons();
+      beanFactory.checkForCircularDependency();
     } catch (BeanParserException e) {
       throw new DIContainerException(e.getMessage());
     }

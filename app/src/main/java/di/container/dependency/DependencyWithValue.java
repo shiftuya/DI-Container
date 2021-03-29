@@ -1,5 +1,8 @@
 package di.container.dependency;
 
+import di.container.BeanDescription;
+import java.util.List;
+
 public class DependencyWithValue implements Dependency {
 
   private final Object bean;
@@ -30,5 +33,10 @@ public class DependencyWithValue implements Dependency {
   @Override
   public Class<?> getClazz() {
     return clazz;
+  }
+
+  @Override
+  public List<BeanDescription> getCycle(List<BeanDescription> traversedDependencies) {
+    return null;
   }
 }

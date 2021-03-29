@@ -1,0 +1,24 @@
+{
+  "beans": [
+    {
+      "id": "class1",
+      "className": "di.circulardependency.objects.Class1",
+      "lifecycle": "prototype",
+      "constructorArguments": [
+        {
+          "ref": "class2"
+        }
+      ]
+    },
+    {
+      "id": "class2",
+      "className": "di.circulardependency.objects.Class2",
+      "lifecycle": "prototype",
+      "constructorArguments": [
+        {
+          "ref": "class1"
+        }
+      ]
+    }
+  ]
+}
