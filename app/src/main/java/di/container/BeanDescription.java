@@ -24,6 +24,10 @@ public class BeanDescription {
   private List<Dependency> fieldDependencies;
   private BeanInstance beanInstance;
 
+  public BeanLifecycle getBeanLifecycle() {
+    return beanLifecycle;
+  }
+
   public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz,
       List<InjectableConstructor> constructorArgs, List<Dependency> fieldDependencies,
       List<InjectableMethod> injectableMethods) {

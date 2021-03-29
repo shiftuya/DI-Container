@@ -54,4 +54,19 @@ public class BeanFactory {
   public void setBeanDescriptionSet(Set<BeanDescription> beanDescriptionSet) {
     this.beanDescriptionSet = Collections.synchronizedSet(new HashSet<>(beanDescriptionSet));
   }
+
+  public void initSingletons() throws DIContainerException {
+    for (BeanDescription description : Sets.union(
+        beanDescriptionSet, new HashSet<>(beanDescriptions.values()))) {
+      if (description.getBeanLifecycle() == BeanLifecycle.SINGLETON) {
+        try {
+          description.getBean();
+        } catch (DIContainerException e) {
+          throw new DIContainerException(
+              "Exception during singleton initialization (" + description.getClazz() + "): " + e
+                  .getMessage());
+        }
+      }
+    }
+  }
 }
