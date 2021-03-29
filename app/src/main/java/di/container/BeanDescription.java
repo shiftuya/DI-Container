@@ -19,13 +19,12 @@ public class BeanDescription {
 
   private final BeanLifecycle beanLifecycle;
   private final Class<?> clazz;
-  private final boolean isProxy;
   private final List<InjectableConstructor> constructorArgs;
   private final List<InjectableMethod> injectableMethods;
   private List<Dependency> fieldDependencies;
   private BeanInstance beanInstance;
 
-  public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz, boolean isProxy,
+  public BeanDescription(BeanLifecycle beanLifecycle, Class<?> clazz,
       List<InjectableConstructor> constructorArgs, List<Dependency> fieldDependencies,
       List<InjectableMethod> injectableMethods) {
     this.beanLifecycle = beanLifecycle;
@@ -37,7 +36,6 @@ public class BeanDescription {
     };
 
     this.clazz = clazz;
-    this.isProxy = isProxy;
     this.constructorArgs = constructorArgs;
     this.injectableMethods = injectableMethods;
     this.fieldDependencies = fieldDependencies;

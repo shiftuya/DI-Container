@@ -32,7 +32,7 @@ public class BeanGenerationTest {
     Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
     BeanDescription prototype = new BeanDescription(BeanLifecycle.PROTOTYPE, SimpleClass.class,
-        false, List.of(new InjectableConstructorImpl(Lists.asList(stringArg, new Dependency[0]))),
+        List.of(new InjectableConstructorImpl(Lists.asList(stringArg, new Dependency[0]))),
         new ArrayList<>(), new ArrayList<>());
 
     Map<String, BeanDescription> map = new HashMap<>();
@@ -61,7 +61,6 @@ public class BeanGenerationTest {
     Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
     Dependency intArg = new DependencyWithValue("number", number, int.class);
     BeanDescription singleton = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class,
-        false,
         List.of(new InjectableConstructorImpl(Lists.newArrayList(stringArg))), new ArrayList<>(),
         Lists.newArrayList(new InjectableSetterMethod("number", intArg)));
 
@@ -90,7 +89,7 @@ public class BeanGenerationTest {
 
     Dependency stringArg = new DependencyWithValue("attribute", value, String.class);
 
-    BeanDescription field = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class, false,
+    BeanDescription field = new BeanDescription(BeanLifecycle.SINGLETON, SimpleClass.class,
         List.of(new InjectableConstructorImpl(Lists.newArrayList(stringArg))), new ArrayList<>(),
         new ArrayList<>());
 
@@ -102,7 +101,7 @@ public class BeanGenerationTest {
     Dependency complexSingletonConstructorProperty = new DependencyWithId(beanFactory, "singleton");
     BeanDescription complexSingleton = new BeanDescription(BeanLifecycle.SINGLETON,
         ComplexClass.class,
-        false, List.of(
+        List.of(
         new InjectableConstructorImpl(Lists.newArrayList(complexSingletonConstructorProperty))),
         new ArrayList<>(),
         new ArrayList<>());

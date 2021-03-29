@@ -71,7 +71,6 @@ public class JsonBeanParser implements BeanParser {
                 default -> throw new BeanParserException("Unknown bean lifecycle: " + bean.getLifecycle());
             },
             getClazz(bean.getClassName()),
-            bean.isProxy(),
             new ArrayList<>() {{
                 add(new InjectableConstructorImpl(parseBeanProperties(bean.getConstructorArguments())));
             }},

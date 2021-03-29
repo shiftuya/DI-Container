@@ -85,7 +85,6 @@ public class AnnotationBeanParser implements BeanParser {
             BeanDescription beanDescription = new BeanDescription(
                 beanAnnotation.lifecycle(),
                 clazz,
-                false, // todo delete?
                 getInjectableConstructors(clazz),
                 getFieldDependencies(clazz),
                 getInjectableMethods(clazz)
@@ -177,14 +176,11 @@ public class AnnotationBeanParser implements BeanParser {
     }
 
     private InjectableConstructor getInjectableConstructor(Constructor<?> constructor) throws BeanParserException {
-        List<Dependency> constructorDependencies = new ArrayList<>();
         if (constructor.isVarArgs()) {
-            // todo VarArgs
-        } else {
-            constructorDependencies = getDependencies(constructor);
+            throw new BeanParserException("VarArgs constructor is not supported");
         }
 
-        return new InjectableConstructorImpl(constructorDependencies);
+        return new InjectableConstructorImpl(getDependencies(constructor));
     }
 
     private List<Dependency> getDependencies(Executable executable) throws BeanParserException {
