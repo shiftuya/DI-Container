@@ -1,5 +1,6 @@
 package di.container.profile;
 
+import di.container.ContainerConstants;
 import di.util.Utils;
 import java.util.Collections;
 import java.util.Set;
@@ -7,10 +8,8 @@ import java.util.stream.Collectors;
 
 public class SimpleProfileChecker implements ProfileChecker {
 
-  public static final String PROFILES_PROPERTY_NAME = "di_profiles_active";
-
   private static final Set<String> profiles = Utils
-      .splitByComma(System.getProperty(PROFILES_PROPERTY_NAME)).stream()
+      .splitByComma(System.getProperty(ContainerConstants.PROFILES_PROPERTY_NAME)).stream()
       .collect(Collectors.toUnmodifiableSet());
 
   @Override
