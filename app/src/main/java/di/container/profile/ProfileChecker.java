@@ -1,5 +1,5 @@
 package di.container.profile;
 
 public interface ProfileChecker {
-  boolean isProfileActive(String profileName);
+  boolean matchingProfiles(String includeProfiles, String excludeProfiles);
 }
