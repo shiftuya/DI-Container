@@ -5,6 +5,7 @@ import di.beanparser.BeanParserException;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.annotations.Bean;
+import di.container.annotations.Profile;
 import di.container.dependency.Dependency;
 import di.container.dependency.DependencyWithId;
 import di.container.dependency.DependencyWithType;
@@ -13,6 +14,7 @@ import di.container.dependency.InjectableConstructor;
 import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableMethod;
 import di.container.dependency.ProviderDependency;
+import di.container.profile.ProfileChecker;
 import di.sourcesscanner.DirectorySourcesScanner;
 import di.sourcesscanner.JarSourcesScanner;
 import di.sourcesscanner.SourcesScanner;
@@ -39,6 +41,7 @@ import java.util.Set;
 public class AnnotationBeanParser implements BeanParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
+    private final ProfileChecker profileChecker = (includeProfiles, excludeProfiles) -> false; // todo replace
 
     public AnnotationBeanParser() throws BeanParserException {
         this("", new Class<?>[] {});
@@ -79,6 +82,13 @@ public class AnnotationBeanParser implements BeanParser {
         for (Class<?> clazz : classes) {
             Bean beanAnnotation = clazz.getAnnotation(Bean.class);
             if (beanAnnotation == null) {
+                continue;
+            }
+
+            Profile profileAnnotation = clazz.getAnnotation(Profile.class);
+            if (profileAnnotation != null && !profileChecker.matchingProfiles(
+                profileAnnotation.include(), profileAnnotation.exclude())) {
+
                 continue;
             }
 
