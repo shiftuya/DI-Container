@@ -8,12 +8,11 @@ import java.util.stream.Collectors;
 
 public class SimpleProfileChecker implements ProfileChecker {
 
-  private static final Set<String> profiles = Utils
-      .splitByComma(System.getProperty(ContainerConstants.PROFILES_PROPERTY_NAME)).stream()
-      .collect(Collectors.toUnmodifiableSet());
-
   @Override
   public boolean matchingProfiles(String includeProfiles, String excludeProfiles) {
+    Set<String> profiles = Utils
+        .splitByComma(System.getProperty(ContainerConstants.PROFILES_PROPERTY_NAME)).stream()
+        .collect(Collectors.toUnmodifiableSet());
     if (!profiles.containsAll(Utils.splitByComma(includeProfiles))) {
       return false;
     }
