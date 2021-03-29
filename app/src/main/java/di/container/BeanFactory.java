@@ -19,7 +19,7 @@ public class BeanFactory {
   public Object getBean(String id) throws DIContainerException {
     var beanDescription = beanDescriptions.get(id);
     if (beanDescription == null) {
-      throw new DIContainerException("Illegal id!!!");
+      throw new DIContainerException("Unknown bean id: " + id);
     }
 
     return beanDescription.getBean();
@@ -34,7 +34,7 @@ public class BeanFactory {
       throw new DIContainerException("No beans found: " + clazz);
     }
     if (descriptions.size() > 1) {
-      throw new DIContainerException("Too many beans found");
+      throw new DIContainerException("Too many beans found for class " + clazz);
     }
     return descriptions.get(0).getBean();
   }
