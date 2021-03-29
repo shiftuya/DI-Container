@@ -1,6 +1,10 @@
 {
     "beans": [
         {
+            "profile": {
+                "include": ["prod"],
+                "exclude": ["dev"]
+            },
             "id": "personJohn",
             "className": "di.jsonparser.Person",
             "constructorArguments": [

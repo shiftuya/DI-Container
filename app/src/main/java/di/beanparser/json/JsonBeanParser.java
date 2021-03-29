@@ -6,6 +6,7 @@ import di.beanparser.BeanParserException;
 import di.beanparser.json.objects.Argument;
 import di.beanparser.json.objects.Bean;
 import di.beanparser.json.objects.Beans;
+import di.beanparser.json.objects.Profile;
 import di.container.BeanDescription;
 import di.container.BeanFactory;
 import di.container.BeanLifecycle;
@@ -17,6 +18,7 @@ import di.container.dependency.InjectableConstructorImpl;
 import di.container.dependency.InjectableSetterMethod;
 import di.container.dependency.InnerDependency;
 import di.container.dependency.ProviderDependency;
+import di.container.profile.ProfileChecker;
 import di.util.Utils;
 
 import java.io.IOException;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class JsonBeanParser implements BeanParser {
 
     private final BeanFactory beanFactory = new BeanFactory();
+    private final ProfileChecker profileChecker = (includeProfiles, excludeProfiles) -> false; // todo replace
 
     public JsonBeanParser(String jsonFileName) throws BeanParserException {
         try {
@@ -40,11 +43,21 @@ public class JsonBeanParser implements BeanParser {
         }
     }
 
+    @Override
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
+
     private void parseBeans(Beans beans) throws ClassNotFoundException, BeanParserException {
         Map<String, BeanDescription> beanMap = new HashMap<>();
         Set<BeanDescription> beanSet = new HashSet<>();
 
         for (Bean bean : beans.getBeans()) {
+            Profile profile = bean.getProfile();
+            if (profile != null && !profileChecker.matchingProfiles(profile.getInclude(), profile.getExclude())) {
+                continue;
+            }
+
             BeanDescription beanDescription = parseBeanDescription(bean);
             if (bean.getId() != null) {
                 beanMap.put(bean.getId(), beanDescription);
@@ -55,11 +68,6 @@ public class JsonBeanParser implements BeanParser {
 
         beanFactory.setBeanDescriptions(beanMap);
         beanFactory.setBeanDescriptionSet(beanSet);
-    }
-
-    @Override
-    public BeanFactory getBeanFactory() {
-        return beanFactory;
     }
 
     private BeanDescription parseBeanDescription(Bean bean) throws BeanParserException {

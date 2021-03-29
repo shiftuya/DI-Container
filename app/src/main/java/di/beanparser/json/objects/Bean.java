@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class Bean {
 
+    private Profile profile;
     private String id;
     private String className;
     private String lifecycle = "singleton";
@@ -14,13 +15,18 @@ public class Bean {
     @Override
     public String toString() {
         return "Bean{" +
-            "id='" + id + '\'' +
+            "profile=" + profile +
+            ", id='" + id + '\'' +
             ", className='" + className + '\'' +
             ", lifecycle='" + lifecycle + '\'' +
             ", constructorArguments=" + Arrays.toString(constructorArguments) +
             ", setterArguments=" + Arrays.toString(setterArguments) +
             ", fields=" + Arrays.toString(fields) +
             '}';
+    }
+
+    public Profile getProfile() {
+        return profile;
     }
 
     public String getId() {
