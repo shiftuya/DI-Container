@@ -7,6 +7,8 @@ import di.beanparser.json.objects.Argument;
 import di.beanparser.json.objects.Bean;
 import di.beanparser.json.objects.Beans;
 import di.beanparser.json.objects.Profile;
+import di.beanparser.typeparser.PrimitivesParser;
+import di.beanparser.typeparser.TypedObject;
 import di.container.beandescription.BeanDescription;
 import di.container.BeanFactory;
 import di.container.beandescription.BeanLifecycle;
