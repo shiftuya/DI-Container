@@ -1,6 +1,7 @@
 package di.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class Utils {
     }
 
     public static List<String> splitByComma(String str) {
-        return Arrays.asList(str.split(","));
+        if (str == null || str.isBlank()) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(str.split("\s*,\s*"));
     }
 }
