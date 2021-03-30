@@ -6,9 +6,12 @@ import di.annotations.objects.ClassWithInjectedConstructor;
 import di.annotations.objects.ClassWithInjectedMethod;
 import di.annotations.objects.ClassWithInjectedProviders;
 import di.annotations.objects.ClassWithNamedDependency;
+import di.annotations.objects.ClassWithValueDependency;
+import di.annotations.objects.ClassWithoutInjectedConstructor;
 import di.annotations.objects.EmptyClass;
 import di.annotations.objects.EmptyPrototypeClass;
 import di.annotations.objects.EmptyThreadClass;
+import di.annotations.objects.Interface;
 import di.container.AnnotationDIContainer;
 import di.container.DIContainer;
 import di.container.DIContainerException;
@@ -18,6 +21,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AnnotationTest {
+
   DIContainer container = new AnnotationDIContainer(this.getClass());
 
   public AnnotationTest() throws DIContainerException {
@@ -30,7 +34,8 @@ public class AnnotationTest {
 
   @Test
   public void annotatedPrototypeTest() throws DIContainerException {
-    assertNotSame(container.getBean(EmptyPrototypeClass.class), container.getBean(EmptyPrototypeClass.class));
+    assertNotSame(container.getBean(EmptyPrototypeClass.class),
+        container.getBean(EmptyPrototypeClass.class));
   }
 
   @Test
@@ -39,15 +44,20 @@ public class AnnotationTest {
   }
 
   @Test
-  public void classWithMultipleInjectedConstructorsTest() throws DIContainerException {
+  public void annotatedNamedBeanTest() throws DIContainerException {
+    assertEquals("InterfaceImpl",
+        container.getBean("InterfaceImpl", Interface.class).getString());
+  }
+
+  @Test
+  public void classWithMultipleInjectedConstructorsTest() {
     assertThrows(DIContainerException.class, () -> container.getBean(
         ClassWIthMultipleInjectedConstructors.class));
   }
 
   @Test
   public void classWithoutInjectedConstructorTest() throws DIContainerException {
-    /*assertThrows(DIContainerException.class, () -> container.getBean( todo -o think
-        ClassWithoutInjectedConstructor.class));*/
+    assertNotNull(container.getBean(ClassWithoutInjectedConstructor.class).getDependency());
   }
 
   @Test
@@ -122,5 +132,10 @@ public class AnnotationTest {
     assertNotNull(bean.getConstructorProvider());
     assertNotNull(bean.getFieldProvider());
     assertNotNull(bean.getMethodProvider());
+  }
+
+  @Test
+  public void valueTest() throws DIContainerException {
+    assertEquals(5, container.getBean(ClassWithValueDependency.class).getDependency());
   }
 }
