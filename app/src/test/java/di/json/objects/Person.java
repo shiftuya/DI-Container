@@ -1,4 +1,4 @@
-package di.jsonparser;
+package di.json.objects;
 
 import di.container.annotations.Bean;
 

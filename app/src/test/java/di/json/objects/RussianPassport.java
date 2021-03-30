@@ -1,4 +1,4 @@
-package di.jsonparser;
+package di.json.objects;
 
 public class RussianPassport implements IPassport {
   private final String number;

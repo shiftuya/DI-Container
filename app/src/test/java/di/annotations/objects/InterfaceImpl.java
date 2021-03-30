@@ -1,4 +1,4 @@
-package di.annotationtest.objects;
+package di.annotations.objects;
 
 import di.container.beandescription.BeanLifecycle;
 import di.container.annotations.Bean;

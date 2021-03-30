@@ -1,6 +1,4 @@
-package di;
-
-import java.util.Date;
+package di.misc.objects;
 
 public class SimpleClass implements Interface {
   private String attribute;

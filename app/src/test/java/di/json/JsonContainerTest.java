@@ -1,4 +1,4 @@
-package di;
+package di.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -11,9 +11,9 @@ import static org.junit.Assert.fail;
 import di.container.DIContainer;
 import di.container.DIContainerException;
 import di.container.JsonDIContainer;
-import di.jsonparser.FullName;
-import di.jsonparser.IPassport;
-import di.jsonparser.Person;
+import di.json.objects.FullName;
+import di.json.objects.IPassport;
+import di.json.objects.Person;
 import java.util.Arrays;
 import org.junit.Test;
 

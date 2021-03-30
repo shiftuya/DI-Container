@@ -1,4 +1,4 @@
-package di.annotationtest.objects;
+package di.annotations.objects;
 
 public interface Interface {
   String getString();

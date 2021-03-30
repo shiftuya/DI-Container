@@ -1,4 +1,4 @@
-package di.annotationtest.objects;
+package di.annotations.objects;
 
 import javax.inject.Inject;
 

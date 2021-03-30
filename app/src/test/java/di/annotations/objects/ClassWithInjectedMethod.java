@@ -1,18 +1,15 @@
-package di.annotationtest.objects;
+package di.annotations.objects;
 
 import di.container.annotations.Bean;
 import javax.inject.Inject;
 
 @Bean
-public class ClassWithInjectedConstructor {
+public class ClassWithInjectedMethod {
   private EmptyClass dependency;
 
   @Inject
-  public ClassWithInjectedConstructor(EmptyClass dependency) {
+  public void method(EmptyClass dependency) {
     this.dependency = dependency;
-  }
-
-  public ClassWithInjectedConstructor() {
   }
 
   public EmptyClass getDependency() {

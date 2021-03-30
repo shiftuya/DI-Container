@@ -1,14 +1,14 @@
-package di.annotationtest;
+package di.annotations;
 
-import di.annotationtest.objects.ClassWIthMultipleInjectedConstructors;
-import di.annotationtest.objects.ClassWithDifferentScopedDependencies;
-import di.annotationtest.objects.ClassWithInjectedConstructor;
-import di.annotationtest.objects.ClassWithInjectedMethod;
-import di.annotationtest.objects.ClassWithInjectedProviders;
-import di.annotationtest.objects.ClassWithNamedDependency;
-import di.annotationtest.objects.EmptyClass;
-import di.annotationtest.objects.EmptyPrototypeClass;
-import di.annotationtest.objects.EmptyThreadClass;
+import di.annotations.objects.ClassWIthMultipleInjectedConstructors;
+import di.annotations.objects.ClassWithDifferentScopedDependencies;
+import di.annotations.objects.ClassWithInjectedConstructor;
+import di.annotations.objects.ClassWithInjectedMethod;
+import di.annotations.objects.ClassWithInjectedProviders;
+import di.annotations.objects.ClassWithNamedDependency;
+import di.annotations.objects.EmptyClass;
+import di.annotations.objects.EmptyPrototypeClass;
+import di.annotations.objects.EmptyThreadClass;
 import di.container.AnnotationDIContainer;
 import di.container.DIContainer;
 import di.container.DIContainerException;

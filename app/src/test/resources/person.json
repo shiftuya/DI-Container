@@ -6,7 +6,7 @@
                 "exclude": "dev"
             },
             "id": "personJohn",
-            "className": "di.jsonparser.Person",
+            "className": "di.json.objects.Person",
             "constructorArguments": [
                 {
                     "ref": "fullNameJohn"
@@ -14,7 +14,7 @@
                     "className": "java.lang.String",
                     "value": "F"
                 }, {
-                    "className": "di.jsonparser.IPassport",
+                    "className": "di.json.objects.IPassport",
                     "provider": true
                 }
             ],
@@ -29,7 +29,7 @@
                     "value": "M"
                 }, {
                     "fieldName": "car",
-                    "className": "di.jsonparser.ICar"
+                    "className": "di.json.objects.ICar"
                 }
             ],
             "fields": [
@@ -41,7 +41,7 @@
             ]
         }, {
             "id": "fullNameJohn",
-            "className": "di.jsonparser.FullName",
+            "className": "di.json.objects.FullName",
             "lifecycle": "prototype",
             "constructorArguments": [
                 {
@@ -54,11 +54,11 @@
             ]
         }, {
             "id": "personJane",
-            "className": "di.jsonparser.Person",
+            "className": "di.json.objects.Person",
             "constructorArguments": [
                 {
                     "bean": {
-                        "className": "di.jsonparser.FullName",
+                        "className": "di.json.objects.FullName",
                         "constructorArguments": [
                             {
                                 "className": "java.lang.String",
@@ -72,7 +72,7 @@
                 }
             ]
         }, {
-            "className": "di.jsonparser.Car",
+            "className": "di.json.objects.Car",
             "constructorArguments": [
                 {
                     "className": "java.lang.String",
@@ -80,7 +80,7 @@
                 }
             ]
         }, {
-            "className": "di.jsonparser.RussianPassport",
+            "className": "di.json.objects.RussianPassport",
             "lifecycle": "prototype",
             "constructorArguments": [
                 {

@@ -1,4 +1,4 @@
-package di.jsonparser;
+package di.json.objects;
 
 public class Car implements ICar {
 
