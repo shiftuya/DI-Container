@@ -116,7 +116,7 @@ public class JsonBeanParser implements BeanParser {
                         new DependencyWithValue(argument.getFieldName(), typedObject.getValue(), typedObject.getType()) :
                         new DependencyWithValue(typedObject.getValue(), typedObject.getType());
                 } else {
-                    Class<?> clazz = getClazz(argument.getClassName()); // todo create DependencyWithValue for primitives with default value?
+                    Class<?> clazz = getClazz(argument.getClassName());
 
                     dependency = argument.getFieldName() != null ?
                         new DependencyWithType(beanFactory, argument.getFieldName(), clazz) :
