@@ -181,7 +181,7 @@ public class AnnotationBeanParser implements BeanParser {
                 } else {
                     PrimitivesParser primitivesParser = new PrimitivesParser(valueAnnotation.value(), field.getType().getName());
                     TypedObject typedObject = primitivesParser.getTypedObject();
-                    dependency = new DependencyWithValue(typedObject.getValue(), typedObject.getType());
+                    dependency = new DependencyWithValue(field.getName(), typedObject.getValue(), typedObject.getType());
                 }
             }
 
