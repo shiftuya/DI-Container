@@ -106,7 +106,7 @@ public class BeanDescription {
         field.set(object, entry.getBean());
       } catch (NoSuchFieldException | IllegalAccessException e) {
         throw new DIContainerException(
-            "Field \"" + entry.getFieldName() + "\n not found in class \"" + getClazz().getName()
+            "Field \"" + entry.getFieldName() + "\" not found in class \"" + getClazz().getName()
                 + "\"");
       }
     }
