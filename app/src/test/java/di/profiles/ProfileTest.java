@@ -10,6 +10,7 @@ import di.profiles.objects.BeanWithAllProfiles;
 import di.profiles.objects.BeanWithExcludedProfiles;
 import di.profiles.objects.BeanWithIncludedProfiles;
 import di.profiles.objects.BeanWithOtherProfiles;
+import di.profiles.objects.BeanWithOverlappingProfiles;
 import di.profiles.objects.BeanWithoutProfiles;
 import org.junit.Test;
 
@@ -44,5 +45,10 @@ public class ProfileTest {
   @Test(expected = DIContainerException.class)
   public void beanWithOtherProfilesTest() throws DIContainerException {
     container.getBean(BeanWithOtherProfiles.class);
+  }
+
+  @Test(expected = DIContainerException.class)
+  public void beanWithOverlappingProfilesTest() throws DIContainerException {
+    container.getBean(BeanWithOverlappingProfiles.class);
   }
 }
