@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import di.container.DIContainer;
 import di.container.DIContainerException;
@@ -60,12 +60,9 @@ public class JsonContainerTest {
 
     assertEquals("Super Car", john.getCar().getCar());
 
-    try {
-      container.getBean(Person.class);
-      fail();
-    } catch (DIContainerException expected) {
 
-    }
+    assertThrows(DIContainerException.class, () -> container.getBean(Person.class));
+
   }
 
   @Test
